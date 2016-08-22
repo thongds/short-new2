@@ -81,6 +81,8 @@
                 android:textSize="18sp"
                 android:text="Xăng có thể tăng giá hôm nay"/>
             <RelativeLayout
+                android:clickable="true"
+                android:id="@+id/rl_video"
                 android:layout_below="@id/post_title"
                 android:layout_marginLeft="4dp"
                 android:layout_toRightOf="@id/separate_line"
@@ -89,18 +91,21 @@
                 android:layout_height="match_parent">
                 <ImageView
                     android:id="@+id/post_content"
+                    android:clickable="true"
                     android:scaleType="fitXY"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:src="@drawable/youtube_post"/>
                 <ImageView
                     android:id="@+id/play_image_social"
+                    android:clickable="true"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerInParent="true"
                     android:src="@drawable/play_control"/>
                 <ImageView
                     android:visibility="invisible"
+                    android:clickable="true"
                     android:id="@+id/youtube_play_image_social"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

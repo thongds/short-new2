@@ -1,16 +1,20 @@
 package com.sip.shortnews.fragment;
 
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.kogitune.activity_transition.fragment.FragmentTransitionLauncher;
+import com.sip.shortnews.MainActivity;
 import com.sip.shortnews.R;
 import com.sip.shortnews.adapter.SocialMediaAdapter;
 import com.sip.shortnews.model.SocialMediaItem;
@@ -20,7 +24,7 @@ import java.util.ArrayList;
 /**
  * Created by ssd on 8/20/16.
  */
-public class SocialFragment extends PFragment {
+public class SocialFragment extends PFragment implements SocialMediaAdapter.VH.DetailClickListener{
     private LinearLayoutManager mLayoutManager;
     @Nullable
     @Override
@@ -59,8 +63,17 @@ public class SocialFragment extends PFragment {
         }
         mLayoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(mLayoutManager);
-        SocialMediaAdapter socialMediaAdapter = new SocialMediaAdapter(socialViewItemsArray);
+        SocialMediaAdapter socialMediaAdapter = new SocialMediaAdapter(socialViewItemsArray,this);
         recyclerView.setAdapter(socialMediaAdapter);
         return view;
+    }
+
+    @Override
+    public void showDetail(ImageView imageView,SocialMediaItem data) {
+        Log.e("--test--","cliked");
+
+        MainActivity mainActivity = (MainActivity)getActivity();
+        DetailFragment detailFragment = new DetailFragment();
+        mainActivity.replaceBackground(detailFragment);
     }
 }

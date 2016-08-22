@@ -98,7 +98,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
     public void replaceBackground (PFragment fragment){
         FragmentTransaction fragmentTransaction = mFragmentManager.beginTransaction();
 
-        fragmentTransaction.replace(R.id.background,fragment,fragment.getClass().getSimpleName())
+        fragmentTransaction.replace(R.id.holder_content,fragment,fragment.getClass().getSimpleName())
                 .addToBackStack(fragment.getClass().getSimpleName()).
                 commit();
         mIsBackgroundOnTop = true;
@@ -176,7 +176,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
     public void generateMenu(){
 
 
-        
+
         ListView listView = (ListView)findViewById(R.id.list_view_menu);
         ArrayList<MenuItemCustomize> menuItemArrayList = new ArrayList<>();
         int[] resourceIcon = new int[20];

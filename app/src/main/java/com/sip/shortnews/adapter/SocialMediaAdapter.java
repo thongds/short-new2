@@ -3,6 +3,7 @@ package com.sip.shortnews.adapter;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,17 +21,17 @@ import java.util.List;
  * Created by ssd on 8/20/16.
  */
 public class SocialMediaAdapter extends RecyclerView.Adapter<SocialMediaAdapter.VH> {
-
     private List<SocialMediaItem> socialMediaItemList;
+    private VH.DetailClickListener mDetailClickListener;
 
-
-    public SocialMediaAdapter(List<SocialMediaItem> socialMediaItems){
+    public SocialMediaAdapter(List<SocialMediaItem> socialMediaItems, VH.DetailClickListener detailClickListener){
         socialMediaItemList = socialMediaItems;
+        mDetailClickListener = detailClickListener;
     }
     @Override
     public VH onCreateViewHolder(ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.social_media_item,parent,false);
-        return new VH(v);
+        return new VH(v,mDetailClickListener);
     }
 
     @Override
@@ -45,7 +46,7 @@ public class SocialMediaAdapter extends RecyclerView.Adapter<SocialMediaAdapter.
         return 0;
     }
 
-    public static class VH extends RecyclerView.ViewHolder{
+    public static class VH extends RecyclerView.ViewHolder implements View.OnClickListener {
         ImageView mPageLogo;
         ImageView mSocialLogo;
         ImageView mPostImage;
@@ -55,8 +56,11 @@ public class SocialMediaAdapter extends RecyclerView.Adapter<SocialMediaAdapter.
         TextView mPageName;
         ImageView mPlayImage;
         ImageView mYoutubePlay;
-        public VH(View v) {
+        DetailClickListener mDetailClickListener;
+        SocialMediaItem mData;
+        public VH(View v ,DetailClickListener detailClickListener) {
             super(v);
+            mDetailClickListener  = detailClickListener;
             mSocialLogo = (ImageView)v.findViewById(R.id.paper_logo);
             mPageLogo = (ImageView)v.findViewById(R.id.post_image);
             mPostImage = (ImageView)v.findViewById(R.id.post_content);
@@ -66,8 +70,14 @@ public class SocialMediaAdapter extends RecyclerView.Adapter<SocialMediaAdapter.
             mPageName = (TextView)v.findViewById(R.id.page_name);
             mPlayImage = (ImageView)v.findViewById(R.id.play_image_social);
             mYoutubePlay = (ImageView)v.findViewById(R.id.youtube_play_image_social);
+            RelativeLayout relativeLayout = (RelativeLayout)v.findViewById(R.id.rl_video);
+            relativeLayout.setOnClickListener(this);
+            mPlayImage.setOnClickListener(this);
+            mYoutubePlay.setOnClickListener(this);
+            mPostTitle.setOnClickListener(this);
         }
-        public void pushData(SocialMediaItem socialMediaItem){
+        public void pushData(final SocialMediaItem socialMediaItem){
+            mData = socialMediaItem;
             GradientDrawable gd = (GradientDrawable) mTagPost.getBackground().getCurrent();
             gd.setColor(Color.parseColor(socialMediaItem.getmTagColor()));
             mSocialLogo.setImageBitmap(socialMediaItem.getmSocialLogo());
@@ -88,6 +98,29 @@ public class SocialMediaAdapter extends RecyclerView.Adapter<SocialMediaAdapter.
             }
             mPostTitle.setTextColor(Color.parseColor(socialMediaItem.getmTitleColor()));
             mPostTitle.setText(socialMediaItem.getmPostContent());
+        }
+
+        @Override
+        public void onClick(View v) {
+            Log.e("--test--","click id");
+            mDetailClickListener.showDetail(mPostImage,mData);
+//            switch (v.getId()){
+//                case R.id.play_image_social:
+//                    if(mDetailClickListener!=null)
+//                        mDetailClickListener.showDetail(mPostImage,mData);
+//                    break;
+//                case   R.id.youtube_play_image_social:
+//                    if(mDetailClickListener!=null)
+//                        mDetailClickListener.showDetail(mPostImage,mData);
+//                    break;
+//                case R.id.post_content:
+//                    if(mDetailClickListener!=null)
+//                        mDetailClickListener.showDetail(mPostImage,mData);
+//                    break;
+//            }
+        }
+        public interface DetailClickListener{
+             void showDetail(ImageView imageView,SocialMediaItem data);
         }
     }
 }
