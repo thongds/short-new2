@@ -20,7 +20,7 @@ public class DetailViewPageFragment extends PFragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.detail_view_page_layout,container,false);
         ViewPager viewPager = (ViewPager)v.findViewById(R.id.viewPager);
-        CardAdapter cardAdapter = new CardAdapter();
+        CardAdapter cardAdapter = new CardAdapter(getContext());
         viewPager.setAdapter(cardAdapter);
         return v;
     }

@@ -1,5 +1,6 @@
 package com.sip.shortnews.adapter;
 
+import android.content.Context;
 import android.support.v4.view.PagerAdapter;
 import android.support.v7.widget.CardView;
 import android.view.LayoutInflater;
@@ -17,8 +18,9 @@ import java.util.List;
  */
 public class CardAdapter extends PagerAdapter {
     private List<CardView> mViews;
-
-    public CardAdapter(){
+    private Context mContext;
+    public CardAdapter(Context context){
+        mContext = context;
         mViews = new ArrayList<>();
         for(int i=0;i<10;i++){
             mViews.add(null);
@@ -40,6 +42,8 @@ public class CardAdapter extends PagerAdapter {
         CardView cardView = (CardView)v.findViewById(R.id.cardView);
         container.addView(cardView);
         cardView.setMaxCardElevation(18);
+        int padding = UtiliFunction.dpTopxInt(mContext,2);
+        cardView.setContentPadding(-padding,-padding,-padding,-padding);
         mViews.add(cardView);
         notifyDataSetChanged();
         return v;
