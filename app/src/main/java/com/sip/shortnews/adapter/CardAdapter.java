@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.sip.shortnews.R;
+import com.sip.shortnews.Utilies.UtiliFunction;
 
 import java.util.ArrayList;
 import java.util.List;
