@@ -74,6 +74,7 @@ public class SocialFragment extends PFragment implements SocialMediaAdapter.VH.D
 
         MainActivity mainActivity = (MainActivity)getActivity();
         DetailFragment detailFragment = new DetailFragment();
-        mainActivity.replaceBackground(detailFragment);
+        DetailViewPageFragment detailViewPageFragment = new DetailViewPageFragment();
+        mainActivity.replaceBackground(detailViewPageFragment);
     }
 }
