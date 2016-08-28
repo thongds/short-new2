@@ -77,8 +77,8 @@
                 android:layout_marginLeft="4dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="@color/vnexpress_base_color"
-                android:textSize="18sp"
+                android:textColor="@color/colorBlack"
+                android:textSize="16sp"
                 android:text="Xăng có thể tăng giá hôm nay"/>
             <RelativeLayout
                 android:clickable="true"
@@ -92,12 +92,13 @@
                 <ImageView
                     android:id="@+id/post_content"
                     android:clickable="true"
-                    android:scaleType="fitXY"
+                    android:scaleType="centerCrop"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:src="@drawable/youtube_post"/>
                 <ImageView
                     android:id="@+id/play_image_social"
+                    android:visibility="invisible"
                     android:clickable="true"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

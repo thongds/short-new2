@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.nostra13.universalimageloader.core.ImageLoader;
 import com.sip.shortnews.R;
 import com.sip.shortnews.model.CardViewItem;
 import com.sip.shortnews.model.SocialMediaItem;
@@ -21,7 +22,7 @@ import java.util.List;
  * Created by ssd on 8/20/16.
  */
 public class SocialMediaAdapter extends RecyclerView.Adapter<SocialMediaAdapter.VH> {
-    private List<SocialMediaItem> socialMediaItemList;
+    public static List<SocialMediaItem> socialMediaItemList;
     private VH.DetailClickListener mDetailClickListener;
 
     public SocialMediaAdapter(List<SocialMediaItem> socialMediaItems, VH.DetailClickListener detailClickListener){
@@ -36,7 +37,7 @@ public class SocialMediaAdapter extends RecyclerView.Adapter<SocialMediaAdapter.
 
     @Override
     public void onBindViewHolder(VH holder, int position) {
-        holder.pushData(socialMediaItemList.get(position));
+        holder.pushData(socialMediaItemList.get(position),position);
     }
 
     @Override
@@ -56,8 +57,8 @@ public class SocialMediaAdapter extends RecyclerView.Adapter<SocialMediaAdapter.
         TextView mPageName;
         ImageView mPlayImage;
         ImageView mYoutubePlay;
+        int mClickPosition;
         DetailClickListener mDetailClickListener;
-        SocialMediaItem mData;
         public VH(View v ,DetailClickListener detailClickListener) {
             super(v);
             mDetailClickListener  = detailClickListener;
@@ -76,18 +77,18 @@ public class SocialMediaAdapter extends RecyclerView.Adapter<SocialMediaAdapter.
             mYoutubePlay.setOnClickListener(this);
             mPostTitle.setOnClickListener(this);
         }
-        public void pushData(final SocialMediaItem socialMediaItem){
-            mData = socialMediaItem;
+        public void pushData(final SocialMediaItem socialMediaItem,int clickPosition){
             GradientDrawable gd = (GradientDrawable) mTagPost.getBackground().getCurrent();
-            gd.setColor(Color.parseColor(socialMediaItem.getmTagColor()));
-            mSocialLogo.setImageBitmap(socialMediaItem.getmSocialLogo());
-            mPageLogo.setImageBitmap(socialMediaItem.getmPageLogo());
-            mPostImage.setImageBitmap(socialMediaItem.getmImagePost());
-            mPageName.setText(socialMediaItem.getmPageName());
-            if(socialMediaItem.isVideo()){
-                mVideoTag.setImageBitmap(socialMediaItem.getmVideoTagImage());
+            gd.setColor(Color.parseColor(socialMediaItem.getColor_tag()));
+            ImageLoader.getInstance().displayImage(socialMediaItem.getSocial_logo(),mSocialLogo);
+            ImageLoader.getInstance().displayImage(socialMediaItem.getFanpage_logo(),mPageLogo);
+            ImageLoader.getInstance().displayImage(socialMediaItem.getPost_image_url(),mPostImage);
+            mPageName.setText(socialMediaItem.getFanpage_name());
+            mClickPosition = clickPosition;
+            if(socialMediaItem.getIs_video() == 1){
+                ImageLoader.getInstance().displayImage(socialMediaItem.getVideo_tag(),mVideoTag);
                 mVideoTag.setVisibility(View.VISIBLE);
-                if(socialMediaItem.isYoutube()) {
+                if(socialMediaItem.getSocial_name().equals("youtube")) {
                     mYoutubePlay.setVisibility(View.VISIBLE);
                     mPlayImage.setVisibility(View.INVISIBLE);
                 }
@@ -95,15 +96,17 @@ public class SocialMediaAdapter extends RecyclerView.Adapter<SocialMediaAdapter.
                     mYoutubePlay.setVisibility(View.INVISIBLE);
                     mPlayImage.setVisibility(View.VISIBLE);
                 }
+            }else{
+
             }
-            mPostTitle.setTextColor(Color.parseColor(socialMediaItem.getmTitleColor()));
-            mPostTitle.setText(socialMediaItem.getmPostContent());
+           // mPostTitle.setTextColor(Color.parseColor(socialMediaItem.getmTitleColor()));
+            mPostTitle.setText(socialMediaItem.getTitle());
         }
 
         @Override
         public void onClick(View v) {
             Log.e("--test--","click id");
-            mDetailClickListener.showDetail(mPostImage,mData);
+            mDetailClickListener.showDetail(mClickPosition,socialMediaItemList);
 //            switch (v.getId()){
 //                case R.id.play_image_social:
 //                    if(mDetailClickListener!=null)
@@ -120,7 +123,7 @@ public class SocialMediaAdapter extends RecyclerView.Adapter<SocialMediaAdapter.
 //            }
         }
         public interface DetailClickListener{
-             void showDetail(ImageView imageView,SocialMediaItem data);
+             void showDetail(int position,List<SocialMediaItem> data);
         }
     }
 }

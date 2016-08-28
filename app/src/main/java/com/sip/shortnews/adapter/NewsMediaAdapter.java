@@ -2,6 +2,7 @@ package com.sip.shortnews.adapter;
 
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
+import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -11,8 +12,10 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.nostra13.universalimageloader.core.ImageLoader;
 import com.sip.shortnews.R;
 import com.sip.shortnews.model.CardViewItem;
+import com.sip.shortnews.model.NewsHomeItem;
 
 import java.util.List;
 
@@ -21,9 +24,9 @@ import java.util.List;
  */
 public class NewsMediaAdapter<V> extends RecyclerView.Adapter<NewsMediaAdapter.MyViewHolder>{
 
-    private List<CardViewItem> mCardViewItem;
+    private List<NewsHomeItem> mCardViewItem;
 
-    public NewsMediaAdapter(List<CardViewItem> cardViewItems){
+    public NewsMediaAdapter(List<NewsHomeItem> cardViewItems){
         mCardViewItem = cardViewItems;
     }
     @Override
@@ -35,7 +38,7 @@ public class NewsMediaAdapter<V> extends RecyclerView.Adapter<NewsMediaAdapter.M
 
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
-        CardViewItem cardViewItem = mCardViewItem.get(position);
+        NewsHomeItem cardViewItem = mCardViewItem.get(position);
         Log.e("--test--","onBind "+position);
         holder.pushData(cardViewItem);
     }
@@ -67,19 +70,19 @@ public class NewsMediaAdapter<V> extends RecyclerView.Adapter<NewsMediaAdapter.M
             mPostContent = (TextView)v.findViewById(R.id.post_content);
             mPlayImage = (ImageView)v.findViewById(R.id.play_image);
         }
-        public void pushData(CardViewItem cardViewItem){
+        public void pushData(NewsHomeItem cardViewItem){
             GradientDrawable gd = (GradientDrawable) mTagPost.getBackground().getCurrent();
-            gd.setColor(Color.parseColor(cardViewItem.getmTagColor()));
-            mPageLogo.setImageBitmap(cardViewItem.getmPageLogo());
-            mPostImage.setImageBitmap(cardViewItem.getmImagePost());
-            if(cardViewItem.isVideo()){
-                mVideoTag.setImageBitmap(cardViewItem.getmVideoTagImage());
+            gd.setColor(Color.parseColor(cardViewItem.getPaper_tag_color()));
+            ImageLoader.getInstance().displayImage(cardViewItem.getPaper_logo(),mPageLogo);
+            ImageLoader.getInstance().displayImage(cardViewItem.getPost_image(),mPostImage);
+             if(cardViewItem.getIs_video() == 1){
+                ImageLoader.getInstance().displayImage(cardViewItem.getVideo_tag_image(),mVideoTag);
                 mVideoTag.setVisibility(View.VISIBLE);
                 mPlayImage.setVisibility(View.VISIBLE);
             }
-            mPostTitle.setTextColor(Color.parseColor(cardViewItem.getmTitleColor()));
-            mPostTitle.setText(cardViewItem.getmPostTitle());
-            mPostContent.setText(cardViewItem.getmPostContent());
+            mPostTitle.setTextColor(Color.parseColor(cardViewItem.getTitle_color()));
+            mPostTitle.setText(cardViewItem.getPost_title());
+            mPostContent.setText(cardViewItem.getPost_content());
         }
     }
 

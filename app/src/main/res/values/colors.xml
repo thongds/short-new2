@@ -15,4 +15,5 @@
     <color name="colorRed">#D0021B</color>
     <color name="btn_mainfragment_start_color">#FAD961</color>
     <color name="btn_mainfragment_end_color">#F76B1C</color>
+    <color name="colorBlackTrans">#F2000000</color>
 </resources>

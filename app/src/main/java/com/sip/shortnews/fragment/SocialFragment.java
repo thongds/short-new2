@@ -13,68 +13,59 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-import com.kogitune.activity_transition.fragment.FragmentTransitionLauncher;
 import com.sip.shortnews.MainActivity;
 import com.sip.shortnews.R;
 import com.sip.shortnews.adapter.SocialMediaAdapter;
 import com.sip.shortnews.model.SocialMediaItem;
+import com.sip.shortnews.service.home_api.HomeMediaService;
 
 import java.util.ArrayList;
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * Created by ssd on 8/20/16.
  */
-public class SocialFragment extends PFragment implements SocialMediaAdapter.VH.DetailClickListener{
+public class SocialFragment extends PFragment {
     private LinearLayoutManager mLayoutManager;
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.social_holder_layout,container,false);
-        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.recycle_view);
-        ArrayList<SocialMediaItem> socialViewItemsArray = new ArrayList<>();
-        ImageView imageView = new ImageView(getContext());
-        imageView.setImageResource(R.drawable.fanpage_logo);
-        BitmapDrawable drawable = (BitmapDrawable) imageView.getDrawable();
-        Bitmap bitmap = drawable.getBitmap();
-
-        ImageView imageViewPost = new ImageView(getContext());
-        imageViewPost.setImageResource(R.drawable.youtube_post);
-        BitmapDrawable drawablePost = (BitmapDrawable) imageViewPost.getDrawable();
-        Bitmap bitmapPost = drawablePost.getBitmap();
-
-        ImageView socialLogo = new ImageView(getContext());
-        socialLogo.setImageResource(R.drawable.youtube_logo);
-        BitmapDrawable drawableSocialLogo = (BitmapDrawable) socialLogo.getDrawable();
-        Bitmap bitmapSocialLogo = drawableSocialLogo.getBitmap();
-
-        String content = "Tập 252 : Uống 2 ly Beer LU bị phạt 17 triệu";
-        for (int i = 0 ; i<1000; i++){
-            SocialMediaItem socialItem = new SocialMediaItem();
-            socialItem.setYoutube(true);
-            socialItem.setmSocialLogo(bitmapSocialLogo);
-            socialItem.setmPageLogo(bitmap);
-            socialItem.setmImagePost(bitmapPost);
-            socialItem.setmTagColor("#AB192B");
-            socialItem.setmTitleColor("#000000");
-            socialItem.setmPageName("Thánh Lồng Tiếng Official");
-            socialItem.setVideo(true);
-            socialItem.setmPostContent(content);
-            socialViewItemsArray.add(socialItem);
-        }
+        final RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.recycle_view);
         mLayoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(mLayoutManager);
-        SocialMediaAdapter socialMediaAdapter = new SocialMediaAdapter(socialViewItemsArray,this);
-        recyclerView.setAdapter(socialMediaAdapter);
+        HomeMediaService.service().getSocial().enqueue(new Callback<List<SocialMediaItem>>() {
+            @Override
+            public void onResponse(Call<List<SocialMediaItem>> call, Response<List<SocialMediaItem>> response) {
+                if(response.isSuccessful()) {
+                    List<SocialMediaItem> socialMediaItems = response.body();
+
+                    SocialMediaAdapter socialMediaAdapter = new SocialMediaAdapter(socialMediaItems, detailClickListener);
+                    recyclerView.setAdapter(socialMediaAdapter);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<SocialMediaItem>> call, Throwable t) {
+                t.printStackTrace();
+            }
+        });
         return view;
     }
+    SocialMediaAdapter.VH.DetailClickListener  detailClickListener = new SocialMediaAdapter.VH.DetailClickListener() {
+        @Override
+        public void showDetail(int position, List<SocialMediaItem> data) {
+            MainActivity mainActivity = (MainActivity)getActivity();
+            VideoPlayerFragment videoPlayerFragment = new VideoPlayerFragment();
+            videoPlayerFragment.setVideoUlr(data.get(position).getVideo_link());
+            DetailViewPageFragment detailViewPageFragment = new DetailViewPageFragment();
+            detailViewPageFragment.setArg(data,position);
+            mainActivity.replaceBackground(videoPlayerFragment);
+        }
+    };
 
-    @Override
-    public void showDetail(ImageView imageView,SocialMediaItem data) {
-        Log.e("--test--","cliked");
-
-        MainActivity mainActivity = (MainActivity)getActivity();
-        DetailFragment detailFragment = new DetailFragment();
-        DetailViewPageFragment detailViewPageFragment = new DetailViewPageFragment();
-        mainActivity.replaceBackground(detailViewPageFragment);
-    }
 }

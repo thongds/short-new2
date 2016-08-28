@@ -15,11 +15,21 @@ import android.widget.Toast;
 import com.sip.shortnews.MainActivity;
 import com.sip.shortnews.R;
 import com.sip.shortnews.adapter.CardAdapter;
+import com.sip.shortnews.model.SocialMediaItem;
+
+import java.util.List;
 
 /**
  * Created by ssd on 8/27/16.
  */
 public class DetailViewPageFragment extends PFragment {
+
+    int mInitPosition;
+    List<SocialMediaItem> mSocialMediaItemList;
+    public void setArg(List<SocialMediaItem> socialMediaItemList,int position){
+        mSocialMediaItemList = socialMediaItemList;
+        mInitPosition = position;
+    }
 
     @Nullable
     @Override
@@ -30,8 +40,9 @@ public class DetailViewPageFragment extends PFragment {
         final MainActivity mainActivity = (MainActivity) getActivity();
         LinearLayout linearLayout1 = (LinearLayout)v.findViewById(R.id.ll_close1);
         LinearLayout linearLayout2 = (LinearLayout)v.findViewById(R.id.ll_close2);
-        CardAdapter cardAdapter = new CardAdapter(getContext());
+        CardAdapter cardAdapter = new CardAdapter(getContext(),mSocialMediaItemList);
         viewPager.setAdapter(cardAdapter);
+        viewPager.setCurrentItem(mInitPosition);
         linearLayout1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
