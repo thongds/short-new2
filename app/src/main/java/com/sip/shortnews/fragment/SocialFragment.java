@@ -60,11 +60,17 @@ public class SocialFragment extends PFragment {
         @Override
         public void showDetail(int position, List<SocialMediaItem> data) {
             MainActivity mainActivity = (MainActivity)getActivity();
-            VideoPlayerFragment videoPlayerFragment = new VideoPlayerFragment();
-            videoPlayerFragment.setVideoUlr(data.get(position).getVideo_link());
-            DetailViewPageFragment detailViewPageFragment = new DetailViewPageFragment();
-            detailViewPageFragment.setArg(data,position);
-            mainActivity.replaceBackground(videoPlayerFragment);
+            if(data.get(position).getIs_video() == 1){
+                VideoPlayerFragment videoPlayerFragment = new VideoPlayerFragment();
+                videoPlayerFragment.setVideoUlr(data.get(position).getVideo_link());
+                mainActivity.replaceBackground(videoPlayerFragment);
+            }else{
+                DetailViewPageFragment detailViewPageFragment = new DetailViewPageFragment();
+                detailViewPageFragment.setArg(data,position);
+                mainActivity.replaceBackground(detailViewPageFragment);
+            }
+
+
         }
     };
 

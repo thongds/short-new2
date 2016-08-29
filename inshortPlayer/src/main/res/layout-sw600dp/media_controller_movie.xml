@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="utf-8"?><!-- Copyright (C) 2007 The Android Open Source Project
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+  
+          http://www.apache.org/licenses/LICENSE-2.0
+  
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+-->
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+
+    <LinearLayout
+        android:id="@+id/ll_top"
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="60dp"
+        android:background="@drawable/ic_control"
+        android:layout_alignParentTop="true"
+        android:gravity="center"
+        android:layout_centerHorizontal="true">
+
+        <TextView
+            android:textSize="16sp"
+            android:id="@+id/textViewFilmName"
+            android:layout_width="0dp"
+            android:gravity="left|center"
+            android:layout_weight="1"
+            android:paddingLeft="5dp"
+            android:singleLine="true"
+            android:textColor="#ffffff"
+            android:layout_height="match_parent" />
+        <ImageView
+            android:id="@+id/imageViewFavorite"
+            android:layout_width="wrap_content"
+            android:src="@drawable/ic_favorite_white_24dp"
+            android:visibility="visible"
+            android:layout_marginRight="10dp"
+            android:layout_height="wrap_content" />
+        <ImageView
+            android:id="@+id/imageViewShare"
+            android:layout_width="wrap_content"
+            android:src="@drawable/ic_share_white_24dp"
+            android:visibility="visible"
+            android:layout_marginRight="10dp"
+            android:layout_height="wrap_content" />
+
+        <Button
+            android:id="@+id/buttonSub"
+            android:layout_width="40dp"
+            android:text="CC"
+            android:gravity="center"
+            android:textSize="11sp"
+            android:layout_marginRight="5dp"
+            android:layout_height="35dp" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:text="@string/episode"
+            android:minWidth="30dp"
+            android:textSize="11sp"
+            android:gravity="center"
+            android:layout_marginRight="3dp"
+            android:layout_height="35dp"
+            android:id="@+id/buttonEpi" />
+    </LinearLayout>
+
+
+
+
+        <ImageButton
+            android:id="@+id/pause"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:padding="5dp"
+            style="@android:style/MediaButton.Play"
+            android:layout_centerVertical="true"
+            android:layout_centerHorizontal="true" />
+
+        <LinearLayout
+            android:id="@+id/ll_bottom"
+            android:layout_width="match_parent"
+            android:gravity="center"
+            android:background="@drawable/ic_control"
+            android:layout_alignParentBottom="true"
+            android:layout_height="60dp">
+
+            <TextView
+                android:id="@+id/time_current"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:textColor="#ffffff"
+                android:visibility="visible"
+                android:paddingLeft="4dip"
+                android:text="00:00:00"
+                android:gravity="center"
+                android:layout_gravity="center_horizontal"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:paddingRight="4dip" />
+
+            <SeekBar
+                android:id="@+id/mediacontroller_progress"
+                style="@style/SeekBarVertical"
+                android:layout_width="0dip"
+                android:layout_weight="1"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:id="@+id/time"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:textColor="#ffffff"
+                android:paddingRight="4dip"
+                android:visibility="visible"
+                android:gravity="center"
+                android:text="00:00:00"
+                android:layout_gravity="center_horizontal"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:paddingLeft="4dip" />
+
+
+            <ImageButton
+                android:id="@+id/fullscreen"
+                android:paddingLeft="10dp"
+                android:src="@drawable/ic_full_screen_32"
+                android:layout_width="50dp"
+                android:layout_height="match_parent"
+                android:background="@android:color/transparent" />
+
+            <android.support.v7.app.MediaRouteButton
+                android:visibility="gone"
+                android:id="@+id/media_route_button"
+                android:theme="@style/Theme.AppCompat"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content" />
+
+        </LinearLayout>
+
+
+</RelativeLayout>
