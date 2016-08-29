@@ -2,4 +2,8 @@
     <string name="app_name">shortNews</string>
     <string name="vnexpress_content">Lãnh đạo 2 đơn vị kinh doanh xăng dầu lớn tại TP HCM dự báo mức tăng có thể 500-700 đồng một lít với xăng và 200-300 đồng với dầu, trong trường hợp cơ quan quản lý không thay đổi các công cụ thuê, phí và quỹ bình ổn Một đơn vị khác đưa ra kịch bản lạc quan hơn về việc giá bán lẻ vẫn có thể giữ ở mức hiện hành (14.690 đồng một lít với xăng RON 92) nếu nhà điều hành cho sử dụng quỹ bình ổn giá</string>
     <string name="vnexpress_title">Xăng có thể tăng giá hôm nay</string>
+    <string name="title_logo">NATIONAL GEOGRAPHIC</string>
+    <string name="btn_skip_intro">Skip Intro</string>
+    <string name="error_player">There was an error initializing the YouTubePlayer (%1$s)</string>
+
 </resources>

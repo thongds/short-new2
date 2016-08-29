@@ -1,25 +1,21 @@
 package com.sip.shortnews.fragment;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 
 import com.sip.shortnews.MainActivity;
 import com.sip.shortnews.R;
+import com.sip.shortnews.VideoYoutubePlayerActivity;
 import com.sip.shortnews.adapter.SocialMediaAdapter;
 import com.sip.shortnews.model.SocialMediaItem;
 import com.sip.shortnews.service.home_api.HomeMediaService;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
@@ -61,9 +57,20 @@ public class SocialFragment extends PFragment {
         public void showDetail(int position, List<SocialMediaItem> data) {
             MainActivity mainActivity = (MainActivity)getActivity();
             if(data.get(position).getIs_video() == 1){
-                VideoPlayerFragment videoPlayerFragment = new VideoPlayerFragment();
-                videoPlayerFragment.setVideoUlr(data.get(position).getVideo_link());
-                mainActivity.replaceBackground(videoPlayerFragment);
+
+                if(data.get(position).getSocial_name().equals("youtube")){
+                    //VideoYoutubePlayerFragment videoYoutubePlayerFragment = new VideoYoutubePlayerFragment();
+                    //videoYoutubePlayerFragment.setUrl(data.get(position).getVideo_link());
+                    //mainActivity.replaceBackground(videoYoutubePlayerFragment);
+                    Intent intent = new Intent(mainActivity, VideoYoutubePlayerActivity.class);
+                    intent.putExtra("ytID",data.get(position).getVideo_link());
+                    startActivity(intent);
+                    mainActivity.overridePendingTransition(R.anim.from_main_slide_in, R.anim.from_main_silde_out);
+                }else {
+                    VideoPlayerFragment videoPlayerFragment = new VideoPlayerFragment();
+                    videoPlayerFragment.setVideoUlr(data.get(position).getVideo_link());
+                    mainActivity.replaceBackground(videoPlayerFragment);
+                }
             }else{
                 DetailViewPageFragment detailViewPageFragment = new DetailViewPageFragment();
                 detailViewPageFragment.setArg(data,position);

@@ -10,7 +10,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
+import android.widget.Toast;
 
+import com.sip.shortnews.MainActivity;
 import com.sip.shortnews.R;
 import com.sip.shortnews.adapter.NewsMediaAdapter;
 import com.sip.shortnews.model.NewsHomeItem;
@@ -27,12 +29,14 @@ import retrofit2.Response;
  */
 public class NewsFragment extends PFragment {
     private LinearLayoutManager mLayoutManager;
+    private MainActivity mainActivity;
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.news_medial_holder_layout,container,false);
         final RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.recycle_view);
         mLayoutManager = new LinearLayoutManager(getActivity());
+        mainActivity = (MainActivity)getActivity();
         recyclerView.setLayoutManager(mLayoutManager);
 
         HomeMediaService.Service service = HomeMediaService.service();
@@ -42,7 +46,7 @@ public class NewsFragment extends PFragment {
                     response.isSuccessful();
                     List<NewsHomeItem> list = response.body();
                     Log.e("--response--", list.get(0).getFull_link());
-                    NewsMediaAdapter newsMediaAdapter = new NewsMediaAdapter(list);
+                    NewsMediaAdapter newsMediaAdapter = new NewsMediaAdapter(list,ifItemClick);
                     recyclerView.setAdapter(newsMediaAdapter);
                     recyclerView.addOnScrollListener(onScrollListener);
             }
@@ -74,6 +78,25 @@ public class NewsFragment extends PFragment {
         @Override
         public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
             super.onScrolled(recyclerView, dx, dy);
+        }
+    };
+    NewsMediaAdapter.IFItemClick ifItemClick = new NewsMediaAdapter.IFItemClick() {
+        @Override
+        public void clickVideo(NewsHomeItem data) {
+            VideoPlayerFragment videoPlayerFragment = new VideoPlayerFragment();
+
+            if(data.getVideo_link()!=null && !data.getVideo_link().equals("")){
+                videoPlayerFragment.setVideoUlr(data.getVideo_link());
+                mainActivity.replaceBackground(videoPlayerFragment);
+            }else{
+                Toast.makeText(mainActivity,"can not play video now",Toast.LENGTH_LONG).show();
+            }
+
+        }
+
+        @Override
+        public void clickItem(NewsHomeItem data) {
+
         }
     };
 

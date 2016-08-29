@@ -25,9 +25,10 @@ import java.util.List;
 public class NewsMediaAdapter<V> extends RecyclerView.Adapter<NewsMediaAdapter.MyViewHolder>{
 
     private List<NewsHomeItem> mCardViewItem;
-
-    public NewsMediaAdapter(List<NewsHomeItem> cardViewItems){
+    private  IFItemClick mListener;
+    public NewsMediaAdapter(List<NewsHomeItem> cardViewItems,IFItemClick listener){
         mCardViewItem = cardViewItems;
+        mListener = listener;
     }
     @Override
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -40,7 +41,7 @@ public class NewsMediaAdapter<V> extends RecyclerView.Adapter<NewsMediaAdapter.M
     public void onBindViewHolder(MyViewHolder holder, int position) {
         NewsHomeItem cardViewItem = mCardViewItem.get(position);
         Log.e("--test--","onBind "+position);
-        holder.pushData(cardViewItem);
+        holder.pushData(cardViewItem,mListener);
     }
 
     @Override
@@ -50,7 +51,7 @@ public class NewsMediaAdapter<V> extends RecyclerView.Adapter<NewsMediaAdapter.M
         return 0;
     }
 
-    public static class  MyViewHolder extends RecyclerView.ViewHolder{
+    public static class  MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
         ImageView mPageLogo;
         ImageView mPostImage;
         ImageView mVideoTag;
@@ -60,6 +61,8 @@ public class NewsMediaAdapter<V> extends RecyclerView.Adapter<NewsMediaAdapter.M
         ImageView mPlayImage;
         ImageView mSocialLogo;
         TextView mPageName;
+        IFItemClick itemClick;
+        NewsHomeItem mCardViewItem;
         public MyViewHolder(View v){
             super(v);
             mPageLogo = (ImageView)v.findViewById(R.id.paper_logo);
@@ -70,7 +73,9 @@ public class NewsMediaAdapter<V> extends RecyclerView.Adapter<NewsMediaAdapter.M
             mPostContent = (TextView)v.findViewById(R.id.post_content);
             mPlayImage = (ImageView)v.findViewById(R.id.play_image);
         }
-        public void pushData(NewsHomeItem cardViewItem){
+        public void pushData(NewsHomeItem cardViewItem,IFItemClick ifItemClick){
+            itemClick = ifItemClick;
+            mCardViewItem = cardViewItem;
             GradientDrawable gd = (GradientDrawable) mTagPost.getBackground().getCurrent();
             gd.setColor(Color.parseColor(cardViewItem.getPaper_tag_color()));
             ImageLoader.getInstance().displayImage(cardViewItem.getPaper_logo(),mPageLogo);
@@ -79,11 +84,25 @@ public class NewsMediaAdapter<V> extends RecyclerView.Adapter<NewsMediaAdapter.M
                 ImageLoader.getInstance().displayImage(cardViewItem.getVideo_tag_image(),mVideoTag);
                 mVideoTag.setVisibility(View.VISIBLE);
                 mPlayImage.setVisibility(View.VISIBLE);
+                 mPlayImage.setOnClickListener(this);
             }
             mPostTitle.setTextColor(Color.parseColor(cardViewItem.getTitle_color()));
             mPostTitle.setText(cardViewItem.getPost_title());
             mPostContent.setText(cardViewItem.getPost_content());
         }
+
+        @Override
+        public void onClick(View view) {
+            switch (view.getId()){
+                case R.id.play_image:
+                    itemClick.clickVideo(mCardViewItem);
+                    break;
+            }
+        }
+    }
+    public interface IFItemClick{
+        void clickVideo(NewsHomeItem data);
+        void clickItem(NewsHomeItem data);
     }
 
 }

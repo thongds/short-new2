@@ -9,8 +9,12 @@
         android:supportsRtl="true"
         android:name=".AppApplication"
         android:theme="@style/AppTheme">
+    <activity android:name=".VideoYoutubePlayerActivity"
+        android:theme="@style/Theme.AppCompat.Translucent">
 
+    </activity>
     <activity android:name="com.sip.shortnews.MainActivity"
+
         >
         <intent-filter>
         <action android:name="android.intent.action.MAIN" />

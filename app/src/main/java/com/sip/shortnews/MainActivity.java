@@ -5,6 +5,7 @@ import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.AppBarLayout;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -95,7 +96,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                     addToBackStack(fragment.getClass().getSimpleName()).commit();
         mIsBackgroundOnTop = false;
     }
-    public void replaceBackground (PFragment fragment){
+    public void replaceBackground (Fragment fragment){
         FragmentTransaction fragmentTransaction = mFragmentManager.beginTransaction();
 
         fragmentTransaction.replace(R.id.holder_content,fragment,fragment.getClass().getSimpleName())
