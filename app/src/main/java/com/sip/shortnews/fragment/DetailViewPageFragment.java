@@ -1,5 +1,6 @@
 package com.sip.shortnews.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.view.ViewPager;
@@ -14,7 +15,9 @@ import android.widget.Toast;
 
 import com.sip.shortnews.MainActivity;
 import com.sip.shortnews.R;
+import com.sip.shortnews.VideoYoutubePlayerActivity;
 import com.sip.shortnews.adapter.CardAdapter;
+import com.sip.shortnews.adapter.NewsMediaAdapter;
 import com.sip.shortnews.model.SocialMediaItem;
 
 import java.util.List;
@@ -22,10 +25,11 @@ import java.util.List;
 /**
  * Created by ssd on 8/27/16.
  */
-public class DetailViewPageFragment extends PFragment {
+public class DetailViewPageFragment extends PFragment implements CardAdapter.IFCardEvent {
 
     int mInitPosition;
     List<SocialMediaItem> mSocialMediaItemList;
+    private MainActivity mainActivity;
     public void setArg(List<SocialMediaItem> socialMediaItemList,int position){
         mSocialMediaItemList = socialMediaItemList;
         mInitPosition = position;
@@ -37,10 +41,10 @@ public class DetailViewPageFragment extends PFragment {
         View v = inflater.inflate(R.layout.detail_view_page_layout,container,false);
         ViewPager viewPager = (ViewPager)v.findViewById(R.id.viewPager);
 
-        final MainActivity mainActivity = (MainActivity) getActivity();
+        mainActivity = (MainActivity) getActivity();
         LinearLayout linearLayout1 = (LinearLayout)v.findViewById(R.id.ll_close1);
         LinearLayout linearLayout2 = (LinearLayout)v.findViewById(R.id.ll_close2);
-        CardAdapter cardAdapter = new CardAdapter(getContext(),mSocialMediaItemList);
+        CardAdapter cardAdapter = new CardAdapter(getContext(),mSocialMediaItemList,this);
         viewPager.setAdapter(cardAdapter);
         viewPager.setCurrentItem(mInitPosition);
         linearLayout1.setOnClickListener(new View.OnClickListener() {
@@ -58,4 +62,18 @@ public class DetailViewPageFragment extends PFragment {
         return v;
     }
 
+    @Override
+    public void onClickVideo(SocialMediaItem socialMediaItem) {
+        if(socialMediaItem.getSocial_name().equals("youtube")){
+
+            Intent intent = new Intent(mainActivity, VideoYoutubePlayerActivity.class);
+            intent.putExtra("ytID",socialMediaItem.getVideo_link());
+            startActivity(intent);
+            mainActivity.overridePendingTransition(R.anim.from_main_slide_in, R.anim.from_main_silde_out);
+        }else {
+            VideoPlayerFragment videoPlayerFragment = new VideoPlayerFragment();
+            videoPlayerFragment.setVideoUlr(socialMediaItem.getVideo_link());
+            mainActivity.replaceBackground(videoPlayerFragment);
+        }
+    }
 }

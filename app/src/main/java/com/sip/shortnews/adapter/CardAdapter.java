@@ -28,11 +28,12 @@ public class CardAdapter extends PagerAdapter {
     private List<CardView> mViews;
     private List<SocialMediaItem> mSocialMediaArray;
     private Context mContext;
-    public CardAdapter(Context context,List<SocialMediaItem> socialMediaItems){
+    private IFCardEvent ifCardEvent;
+    public CardAdapter(Context context,List<SocialMediaItem> socialMediaItems,IFCardEvent event){
         mSocialMediaArray = socialMediaItems;
         mContext = context;
         mViews = new ArrayList<>();
-
+        ifCardEvent = event;
     }
     @Override
     public int getCount() {
@@ -47,7 +48,7 @@ public class CardAdapter extends PagerAdapter {
     @Override
     public Object instantiateItem(ViewGroup container, int position) {
         View v = LayoutInflater.from(container.getContext()).inflate(R.layout.social_detail_layout,container,false);
-        SocialMediaItem socialMediaItem = mSocialMediaArray.get(position);
+        final SocialMediaItem socialMediaItem = mSocialMediaArray.get(position);
         CardView cardView = (CardView)v.findViewById(R.id.cardView);
         LinearLayout detailHeader = (LinearLayout)v.findViewById(R.id.detail_header);
         TextView socialName = (TextView)v.findViewById(R.id.detail_header_title);
@@ -56,7 +57,12 @@ public class CardAdapter extends PagerAdapter {
         TextView statusTitle = (TextView)v.findViewById(R.id.status_title);
         ImageView postImage = (ImageView)v.findViewById(R.id.post_image_content);
         ImageView playButton = (ImageView)v.findViewById(R.id.play_button);
-
+        playButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ifCardEvent.onClickVideo(socialMediaItem);
+            }
+        });
         ImageLoader.getInstance().displayImage(socialMediaItem.getFanpage_logo(),fanpageAvatar);
         socialName.setText(socialMediaItem.getSocial_name());
         detailHeader.setBackgroundColor(Color.parseColor(socialMediaItem.getColor_tag()));
@@ -81,5 +87,8 @@ public class CardAdapter extends PagerAdapter {
     public void destroyItem(ViewGroup container, int position, Object object) {
         container.removeView((View) object);
         mViews.set(position, null);
+    }
+    public interface IFCardEvent{
+        void onClickVideo(SocialMediaItem socialMediaItem);
     }
 }
