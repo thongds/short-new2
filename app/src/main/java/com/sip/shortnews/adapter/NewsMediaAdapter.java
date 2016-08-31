@@ -32,6 +32,7 @@ public class NewsMediaAdapter<V> extends RecyclerView.Adapter<NewsMediaAdapter.M
     }
     @Override
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        Log.e("--test--","onCreateViewHolder");
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.news_media_view_item,parent,false);
         MyViewHolder ViewHolder = new MyViewHolder(v);
         return ViewHolder;

@@ -61,11 +61,12 @@ public class DetailViewPageFragment extends PFragment implements CardAdapter.IFC
         });
         return v;
     }
+    public void updateCardView(){
 
+    }
     @Override
     public void onClickVideo(SocialMediaItem socialMediaItem) {
         if(socialMediaItem.getSocial_name().equals("youtube")){
-
             Intent intent = new Intent(mainActivity, VideoYoutubePlayerActivity.class);
             intent.putExtra("ytID",socialMediaItem.getVideo_link());
             startActivity(intent);

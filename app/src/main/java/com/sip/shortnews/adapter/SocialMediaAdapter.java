@@ -31,17 +31,21 @@ public class SocialMediaAdapter extends RecyclerView.Adapter<SocialMediaAdapter.
     }
     @Override
     public VH onCreateViewHolder(ViewGroup parent, int viewType) {
+
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.social_media_item,parent,false);
+        Log.d("--debug--","onCreateViewHolder");
         return new VH(v,mDetailClickListener);
     }
 
     @Override
     public void onBindViewHolder(VH holder, int position) {
+        Log.d("--debug--","onBindViewHolder position "+position);
         holder.pushData(socialMediaItemList.get(position),position);
     }
 
     @Override
     public int getItemCount() {
+        Log.d("--debug--","getItemCount");
         if(socialMediaItemList!=null)
             return socialMediaItemList.size();
         return 0;
@@ -82,7 +86,9 @@ public class SocialMediaAdapter extends RecyclerView.Adapter<SocialMediaAdapter.
             gd.setColor(Color.parseColor(socialMediaItem.getColor_tag()));
             ImageLoader.getInstance().displayImage(socialMediaItem.getSocial_logo(),mSocialLogo);
             ImageLoader.getInstance().displayImage(socialMediaItem.getFanpage_logo(),mPageLogo);
-            ImageLoader.getInstance().displayImage(socialMediaItem.getPost_image_url(),mPostImage);
+            String[] post_image = socialMediaItem.getPost_image_url().split(socialMediaItem.getSeparate_image_tag());
+
+            ImageLoader.getInstance().displayImage(post_image[0],mPostImage);
             mPageName.setText(socialMediaItem.getFanpage_name());
             mClickPosition = clickPosition;
             if(socialMediaItem.getIs_video() == 1){
