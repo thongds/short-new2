@@ -68,7 +68,7 @@ public class CardAdapter extends PagerAdapter {
             MainSliderAdapter mainSliderAdapter = new MainSliderAdapter(links);
             mainSlider.setAdapter(mainSliderAdapter);
             IndicatorViewPager indicatorViewPager = (IndicatorViewPager)v.findViewById(R.id.indicator);
-            indicatorViewPager.setImageVisible(4).setMainSlide(mainSlider);
+            indicatorViewPager.setImageVisible(3).setMainSlide(mainSlider);
         }else{
             postImage.setVisibility(View.VISIBLE);
             llSliderParent.setVisibility(View.GONE);

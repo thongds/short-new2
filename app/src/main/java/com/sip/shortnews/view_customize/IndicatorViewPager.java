@@ -1,30 +1,31 @@
 package com.sip.shortnews.view_customize;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
 
-import java.util.List;
+import com.sip.shortnews.Utilies.UtiliFunction;
 
 /**
  * Created by ssd on 8/30/16.
  */
 public class IndicatorViewPager extends ViewPager implements IndicatorAdapter.IFitemIndicatorClick {
+    private String TAG = this.getClass().getSimpleName();
     private  ViewPager mMainSlide;
     private ViewPager mSubSilde;
     private int mParentWidth;
     private int mNumberImageVisible;
     private int mIndicatorItemWidth;
     private int mIndicatorItemHeight;
-    private int mVirtualPos;
-    private int oldPos = 0;
-    private int mCurrentPosBoth;
+    private int mMainOldPos = 0;
+    private int mCurrentPosMain =0;
+    private int mCurrentPosBoth = 0;
+    private int mIndicatorOldPos = 0;
+    private  int mCurrentPosIndicator =0;
     private  boolean isItemClick = false;
+    private int visiblePage = 3;
     public IndicatorViewPager(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
@@ -34,12 +35,14 @@ public class IndicatorViewPager extends ViewPager implements IndicatorAdapter.IF
         mParentWidth = v.getWidth();
         mSubSilde = this;
         MainSliderAdapter mainSliderAdapter =(MainSliderAdapter)mMainSlide.getAdapter();
-        IndicatorAdapter indicatorAdapter = new IndicatorAdapter(mainSliderAdapter.getUrl(),mIndicatorItemWidth,mIndicatorItemHeight,this);
+        IndicatorAdapter indicatorAdapter = new IndicatorAdapter(mainSliderAdapter.getUrl(),mNumberImageVisible,this);
         this.setAdapter(indicatorAdapter);
         this.setClipToPadding(false);
-        mMainSlide.addOnPageChangeListener(pageChangeListener);
-        mSubSilde.addOnPageChangeListener(pageChangeListener);
+        mMainSlide.addOnPageChangeListener(mainPageChangeListener);
+        mSubSilde.addOnPageChangeListener(indicatorPageChangeListener);
     }
+
+
 
     @Override
     public int getPageMargin() {
@@ -52,27 +55,54 @@ public class IndicatorViewPager extends ViewPager implements IndicatorAdapter.IF
     * */
 
     public  IndicatorViewPager setImageVisible(int numberImageVisible){
-        mIndicatorItemHeight = this.getLayoutParams().height;
+        mIndicatorItemHeight = this.getLayoutParams().width;
         mNumberImageVisible = numberImageVisible;
         mIndicatorItemWidth = numberImageVisible/mIndicatorItemHeight;
         this.setOffscreenPageLimit(8);
         return this;
     }
-    OnPageChangeListener pageChangeListener = new OnPageChangeListener() {
+    IndicatorPageChangeListener indicatorPageChangeListener = new IndicatorPageChangeListener() {
+
+
         @Override
         public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-//            mSubSilde.setCurrentItem(position,true);
-//            mMainSlide.setCurrentItem(position);
+
         }
 
         @Override
         public void onPageSelected(int position) {
-            Log.e("--position--","position "+position);
+            if(mIndicatorOldPos < position){
+                //move right
+                ++mMainOldPos;
+            }else{
+                //move left
+                --mMainOldPos;
+            }
+            UtiliFunction.moveStatic(mMainSlide,mainPageChangeListener,mMainOldPos);
+            mIndicatorOldPos = position;
+        }
 
-            if(!isItemClick)
-                mSubSilde.setCurrentItem(position,true);
-            mMainSlide.setCurrentItem(position);
-            isItemClick = false;
+        @Override
+        public void onPageScrollStateChanged(int state) {
+
+        }
+    };
+    IndicatorPageChangeListener mainPageChangeListener = new IndicatorPageChangeListener() {
+        @Override
+        public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+        }
+
+        @Override
+        public void onPageSelected(int position) {
+            if(mMainOldPos< position){
+                if(isShouldMoveIndicate(visiblePage,position,mIndicatorOldPos))
+                    UtiliFunction.moveStatic(mSubSilde,indicatorPageChangeListener,++mIndicatorOldPos);
+            }else{
+                if(isShouldMoveIndicate(visiblePage,position,mIndicatorOldPos))
+                    UtiliFunction.moveStatic(mSubSilde,indicatorPageChangeListener,--mIndicatorOldPos);
+            }
+            mMainOldPos = position;
         }
 
         @Override
@@ -81,9 +111,12 @@ public class IndicatorViewPager extends ViewPager implements IndicatorAdapter.IF
         }
     };
 
+
     @Override
     public void itemClick(int position) {
         isItemClick = true;
-        mMainSlide.setCurrentItem(position);
+        mMainOldPos = position;
+        UtiliFunction.moveStatic(mMainSlide,mainPageChangeListener,position);
     }
+
 }
