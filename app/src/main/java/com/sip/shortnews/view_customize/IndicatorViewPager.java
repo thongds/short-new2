@@ -18,6 +18,8 @@ public class IndicatorViewPager extends ViewPager implements IndicatorAdapter.IF
     private int mNumberImageVisible;
     private int mMainOldPos = 0;
     private int mIndicatorOldPos = 0;
+    private int mOldPosLight = -1;
+    private  IndicatorAdapter indicatorAdapter;
     public IndicatorViewPager(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
@@ -25,7 +27,7 @@ public class IndicatorViewPager extends ViewPager implements IndicatorAdapter.IF
         mMainSlide = viewPager;
         mSubSilde = this;
         MainSliderAdapter mainSliderAdapter =(MainSliderAdapter)mMainSlide.getAdapter();
-        IndicatorAdapter indicatorAdapter = new IndicatorAdapter(mainSliderAdapter.getUrl(),mNumberImageVisible,this);
+        indicatorAdapter = new IndicatorAdapter(mainSliderAdapter.getUrl(),mNumberImageVisible,this);
         this.setAdapter(indicatorAdapter);
         this.setClipToPadding(false);
         mMainSlide.addOnPageChangeListener(mainPageChangeListener);
@@ -102,7 +104,12 @@ public class IndicatorViewPager extends ViewPager implements IndicatorAdapter.IF
     @Override
     public void itemClick(int position) {
         mMainOldPos = position;
+        indicatorAdapter.setNewPosition(mMainOldPos);
+        if(mOldPosLight<0)
+            mOldPosLight =0;
+        indicatorAdapter.setOldPosition(mOldPosLight);
         UtiliFunction.moveStatic(mMainSlide,mainPageChangeListener,position);
+        mOldPosLight = position;
     }
 
 }
