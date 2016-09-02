@@ -20,11 +20,7 @@ public class IndicatorViewPager extends ViewPager implements IndicatorAdapter.IF
     private int mIndicatorItemWidth;
     private int mIndicatorItemHeight;
     private int mMainOldPos = 0;
-    private int mCurrentPosMain =0;
-    private int mCurrentPosBoth = 0;
     private int mIndicatorOldPos = 0;
-    private  int mCurrentPosIndicator =0;
-    private  boolean isItemClick = false;
     private int visiblePage = 3;
     public IndicatorViewPager(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -71,12 +67,13 @@ public class IndicatorViewPager extends ViewPager implements IndicatorAdapter.IF
 
         @Override
         public void onPageSelected(int position) {
+            Log.e(TAG,"detect position "+position);
             if(mIndicatorOldPos < position){
                 //move right
-                ++mMainOldPos;
+                mMainOldPos+=Math.abs(position-mIndicatorOldPos);
             }else{
                 //move left
-                --mMainOldPos;
+                mMainOldPos-=Math.abs(position-mIndicatorOldPos);
             }
             UtiliFunction.moveStatic(mMainSlide,mainPageChangeListener,mMainOldPos);
             mIndicatorOldPos = position;
@@ -114,7 +111,6 @@ public class IndicatorViewPager extends ViewPager implements IndicatorAdapter.IF
 
     @Override
     public void itemClick(int position) {
-        isItemClick = true;
         mMainOldPos = position;
         UtiliFunction.moveStatic(mMainSlide,mainPageChangeListener,position);
     }
