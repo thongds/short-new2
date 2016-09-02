@@ -15,20 +15,14 @@ public class IndicatorViewPager extends ViewPager implements IndicatorAdapter.IF
     private String TAG = this.getClass().getSimpleName();
     private  ViewPager mMainSlide;
     private ViewPager mSubSilde;
-    private int mParentWidth;
     private int mNumberImageVisible;
-    private int mIndicatorItemWidth;
-    private int mIndicatorItemHeight;
     private int mMainOldPos = 0;
     private int mIndicatorOldPos = 0;
-    private int visiblePage = 3;
     public IndicatorViewPager(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
     public void setMainSlide(ViewPager viewPager){
         mMainSlide = viewPager;
-        View v = (View)viewPager.getParent();
-        mParentWidth = v.getWidth();
         mSubSilde = this;
         MainSliderAdapter mainSliderAdapter =(MainSliderAdapter)mMainSlide.getAdapter();
         IndicatorAdapter indicatorAdapter = new IndicatorAdapter(mainSliderAdapter.getUrl(),mNumberImageVisible,this);
@@ -51,10 +45,7 @@ public class IndicatorViewPager extends ViewPager implements IndicatorAdapter.IF
     * */
 
     public  IndicatorViewPager setImageVisible(int numberImageVisible){
-        mIndicatorItemHeight = this.getLayoutParams().width;
         mNumberImageVisible = numberImageVisible;
-        mIndicatorItemWidth = numberImageVisible/mIndicatorItemHeight;
-        this.setOffscreenPageLimit(8);
         return this;
     }
     IndicatorPageChangeListener indicatorPageChangeListener = new IndicatorPageChangeListener() {
@@ -67,7 +58,6 @@ public class IndicatorViewPager extends ViewPager implements IndicatorAdapter.IF
 
         @Override
         public void onPageSelected(int position) {
-            Log.e(TAG,"detect position "+position);
             if(mIndicatorOldPos < position){
                 //move right
                 mMainOldPos+=Math.abs(position-mIndicatorOldPos);
@@ -93,10 +83,10 @@ public class IndicatorViewPager extends ViewPager implements IndicatorAdapter.IF
         @Override
         public void onPageSelected(int position) {
             if(mMainOldPos< position){
-                if(isShouldMoveIndicate(visiblePage,position,mIndicatorOldPos))
+                if(isShouldMoveIndicate(mNumberImageVisible,position,mIndicatorOldPos))
                     UtiliFunction.moveStatic(mSubSilde,indicatorPageChangeListener,++mIndicatorOldPos);
             }else{
-                if(isShouldMoveIndicate(visiblePage,position,mIndicatorOldPos))
+                if(isShouldMoveIndicate(mNumberImageVisible,position,mIndicatorOldPos))
                     UtiliFunction.moveStatic(mSubSilde,indicatorPageChangeListener,--mIndicatorOldPos);
             }
             mMainOldPos = position;
