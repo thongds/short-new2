@@ -1,6 +1,7 @@
 package com.sip.shortnews.view_customize;
 
-import android.database.DataSetObserver;
+import android.animation.Animator;
+import android.animation.ObjectAnimator;
 import android.graphics.Color;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
@@ -24,8 +25,7 @@ public class IndicatorAdapter extends PagerAdapter {
     String TAG = this.getClass().getSimpleName();
     private int mNumberPageVisisble;
     private String[] mUrlArray;
-    private int oldPosition =-1;
-
+    private boolean mIsInited = false;
     public int getNewPosition() {
         return newPosition;
     }
@@ -34,13 +34,6 @@ public class IndicatorAdapter extends PagerAdapter {
         this.newPosition = newPosition;
     }
 
-    public int getOldPosition() {
-        return oldPosition;
-    }
-
-    public void setOldPosition(int oldPosition) {
-        this.oldPosition = oldPosition;
-    }
 
     private int newPosition;
     private IFitemIndicatorClick mIFitemIndicatorClick;
@@ -64,43 +57,95 @@ public class IndicatorAdapter extends PagerAdapter {
 
     @Override
     public Object instantiateItem(ViewGroup container, final int position) {
+        Log.d("--record--","notifica");
         View v = LayoutInflater.from(container.getContext()).inflate(R.layout.indicator_card,container,false);
         CardView card = (CardView)v.findViewById(R.id.cardView);
 //        card.setMaxCardElevation(3.0f);
         ImageView imageView = (ImageView)v.findViewById(R.id.image);
-       // final LinearLayout mask = (LinearLayout) v.findViewById(R.id.mask);
+        LinearLayout mask = (LinearLayout) v.findViewById(R.id.mask);
         ImageLoader.getInstance().displayImage(mUrlArray[position],imageView);
         imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 mIFitemIndicatorClick.itemClick(position);
-               // mask.setVisibility(View.INVISIBLE);
+               //
             }
         });
         container.addView(card,position);
+        if(!mIsInited&&position == 0){
+            updatePos(container,0,-1);
+            mIsInited = true;
+        }
         return v;
     }
 
-
     @Override
-    public void startUpdate(ViewGroup container) {
-        Log.e(TAG,"startUpdate");
+    public void finishUpdate(ViewGroup container) {
+        super.finishUpdate(container);
 
-        CardView cardViewMask = (CardView) container.getChildAt(oldPosition);
-        if(cardViewMask!=null) {
-            LinearLayout mask = (LinearLayout) cardViewMask.getChildAt(1);
-            if (mask != null)
-                mask.setBackgroundColor(Color.parseColor("#80F5F9FA"));
-        }
-        CardView cardViewLight = (CardView) container.getChildAt(newPosition);
-        if(cardViewLight!=null) {
-            LinearLayout mask = (LinearLayout) cardViewLight.getChildAt(1);
-            if (mask != null)
-                mask.setBackgroundColor(Color.TRANSPARENT);
-        }
-        super.startUpdate(container);
     }
 
+    public void updatePos(ViewGroup viewGroup, int newPosition,int oldPos){
+
+        CardView cardViewLight = (CardView) viewGroup.getChildAt(oldPos);
+        if(cardViewLight!=null) {
+            final LinearLayout mask1 = (LinearLayout) cardViewLight.getChildAt(1);
+
+            ObjectAnimator objectanimator1 =  ObjectAnimator.ofFloat(cardViewLight,"scaleX",1f).ofFloat(cardViewLight,"scaleY",1f);
+            objectanimator1.addListener(new Animator.AnimatorListener() {
+                @Override
+                public void onAnimationStart(Animator animator) {
+
+                }
+
+                @Override
+                public void onAnimationEnd(Animator animator) {
+                    if (mask1 != null)
+                        mask1.setBackgroundColor(Color.parseColor("#80F5F9FA"));
+                }
+
+                @Override
+                public void onAnimationCancel(Animator animator) {
+
+                }
+
+                @Override
+                public void onAnimationRepeat(Animator animator) {
+
+                }
+            });
+            objectanimator1.start();
+        }
+        CardView cardViewMask = (CardView) viewGroup.getChildAt(newPosition);
+        if(cardViewMask!=null) {
+            final  LinearLayout mask2 = (LinearLayout) cardViewMask.getChildAt(1);
+            ObjectAnimator objectanimator2 =  ObjectAnimator.ofFloat(cardViewMask,"scaleX",1.6f).ofFloat(cardViewMask,"scaleY",1.6f);
+            objectanimator2.addListener(new Animator.AnimatorListener() {
+                @Override
+                public void onAnimationStart(Animator animator) {
+
+                }
+
+                @Override
+                public void onAnimationEnd(Animator animator) {
+                    if (mask2 != null)
+                        mask2.setBackgroundColor(Color.TRANSPARENT);
+                }
+
+                @Override
+                public void onAnimationCancel(Animator animator) {
+
+                }
+
+                @Override
+                public void onAnimationRepeat(Animator animator) {
+
+                }
+            });
+            objectanimator2.start();
+        }
+        super.startUpdate(viewGroup);
+    }
     @Override
     public float getPageWidth(int position) {
         return (float)1/mNumberPageVisisble;

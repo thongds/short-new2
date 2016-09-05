@@ -1,10 +1,13 @@
 package com.sip.shortnews.view_customize;
 
 import android.content.Context;
+import android.os.Handler;
 import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 
 import com.sip.shortnews.Utilies.UtiliFunction;
 
@@ -14,12 +17,12 @@ import com.sip.shortnews.Utilies.UtiliFunction;
 public class IndicatorViewPager extends ViewPager implements IndicatorAdapter.IFitemIndicatorClick {
     private String TAG = this.getClass().getSimpleName();
     private  ViewPager mMainSlide;
-    private ViewPager mSubSilde;
+    public ViewPager mSubSilde;
     private int mNumberImageVisible;
     private int mMainOldPos = 0;
     private int mIndicatorOldPos = 0;
-    private int mOldPosLight = -1;
     private  IndicatorAdapter indicatorAdapter;
+    private boolean mScrollable = true;
     public IndicatorViewPager(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
@@ -32,9 +35,9 @@ public class IndicatorViewPager extends ViewPager implements IndicatorAdapter.IF
         this.setClipToPadding(false);
         mMainSlide.addOnPageChangeListener(mainPageChangeListener);
         mSubSilde.addOnPageChangeListener(indicatorPageChangeListener);
+        mSubSilde.setOffscreenPageLimit(mainSliderAdapter.getUrl().length);
+
     }
-
-
 
     @Override
     public int getPageMargin() {
@@ -60,6 +63,7 @@ public class IndicatorViewPager extends ViewPager implements IndicatorAdapter.IF
 
         @Override
         public void onPageSelected(int position) {
+            int maskIndicatorOldPos = mMainOldPos;
             if(mIndicatorOldPos < position){
                 //move right
                 mMainOldPos+=Math.abs(position-mIndicatorOldPos);
@@ -67,7 +71,8 @@ public class IndicatorViewPager extends ViewPager implements IndicatorAdapter.IF
                 //move left
                 mMainOldPos-=Math.abs(position-mIndicatorOldPos);
             }
-            UtiliFunction.moveStatic(mMainSlide,mainPageChangeListener,mMainOldPos);
+            moveMainStatic(mMainOldPos);
+            indicatorAdapter.updatePos(mSubSilde,mMainOldPos,maskIndicatorOldPos);
             mIndicatorOldPos = position;
         }
 
@@ -76,20 +81,84 @@ public class IndicatorViewPager extends ViewPager implements IndicatorAdapter.IF
 
         }
     };
+    public final void moveIndicatorStatic(final int moveTo){
+        mSubSilde.removeOnPageChangeListener(indicatorPageChangeListener);
+        mSubSilde.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+                if(state == ViewPager.SCROLL_STATE_IDLE){
+                    mSubSilde.addOnPageChangeListener(indicatorPageChangeListener);
+                    mSubSilde.removeOnPageChangeListener(this);
+                }
+            }
+        });
+        mSubSilde.setCurrentItem(moveTo);
+    }
+    public final void moveMainStatic(final int moveTo){
+        mScrollable = false;
+        mMainSlide.clearOnPageChangeListeners();
+        mMainSlide.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+
+
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+                if(state == SCROLL_STATE_IDLE){
+                    mMainSlide.clearOnPageChangeListeners();
+                    mMainSlide.addOnPageChangeListener(mainPageChangeListener);
+                    mScrollable = true;
+                }
+            }
+        });
+        mMainSlide.setCurrentItem(moveTo);
+    }
     IndicatorPageChangeListener mainPageChangeListener = new IndicatorPageChangeListener() {
         @Override
         public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
+            Log.e("-scroll-","mainPageChangeListener onPageScrolled  : position "+position);
+            Log.d("--scrolled--","position "+position+ " positionOffset "+positionOffset+ " positionOffsetPixels "+positionOffsetPixels+ " oldPos"+mMainOldPos);
+            if( position == 0 && positionOffset == 0.0 && positionOffsetPixels == 0) return;
+            if(position == mMainOldPos&&positionOffsetPixels>=600) {
+                indicatorAdapter.updatePos(mSubSilde,mMainOldPos+1,mMainOldPos);
+            }
+            if(position == mMainOldPos && positionOffsetPixels<600){
+                indicatorAdapter.updatePos(mSubSilde,mMainOldPos,mMainOldPos+1);
+            }
+            if(position < mMainOldPos&&positionOffsetPixels<600) {
+                indicatorAdapter.updatePos(mSubSilde,mMainOldPos-1,mMainOldPos);
+            }
+            if(position < mMainOldPos && positionOffsetPixels>=600){
+                indicatorAdapter.updatePos(mSubSilde,mMainOldPos,mMainOldPos-1);
+            }
         }
 
         @Override
         public void onPageSelected(int position) {
+            Log.d(TAG,"onPageSelected");
             if(mMainOldPos< position){
                 if(isShouldMoveIndicate(mNumberImageVisible,position,mIndicatorOldPos))
-                    UtiliFunction.moveStatic(mSubSilde,indicatorPageChangeListener,++mIndicatorOldPos);
+                    moveIndicatorStatic(++mIndicatorOldPos);
             }else{
                 if(isShouldMoveIndicate(mNumberImageVisible,position,mIndicatorOldPos))
-                    UtiliFunction.moveStatic(mSubSilde,indicatorPageChangeListener,--mIndicatorOldPos);
+                    moveIndicatorStatic(--mIndicatorOldPos);
             }
             mMainOldPos = position;
         }
@@ -103,13 +172,21 @@ public class IndicatorViewPager extends ViewPager implements IndicatorAdapter.IF
 
     @Override
     public void itemClick(int position) {
-        mMainOldPos = position;
-        indicatorAdapter.setNewPosition(mMainOldPos);
-        if(mOldPosLight<0)
-            mOldPosLight =0;
-        indicatorAdapter.setOldPosition(mOldPosLight);
-        UtiliFunction.moveStatic(mMainSlide,mainPageChangeListener,position);
-        mOldPosLight = position;
+        if(position != mMainOldPos){
+            moveMainStatic(position);
+            indicatorAdapter.updatePos(mSubSilde,position,mMainOldPos);
+            mMainOldPos = position;
+        }
+
     }
 
+    @Override
+    public boolean onTouchEvent(MotionEvent ev) {
+        return this.mScrollable&&super.onTouchEvent(ev);
+    }
+
+    @Override
+    public boolean onInterceptTouchEvent(MotionEvent ev) {
+        return this.mScrollable && super.onInterceptTouchEvent(ev);
+    }
 }
