@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- START xml_defaults -->
+<defaultsMap>
+    <entry>
+        <key>default_domain_in_local</key>
+        <value>http://192.168.1.101/blog/public/</value>
+    </entry>
+</defaultsMap>
+    <!-- END xml_defaults -->

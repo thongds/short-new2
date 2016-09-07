@@ -4,6 +4,7 @@ import android.app.ActionBar;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -17,8 +18,15 @@ import android.view.View;
 import android.view.Window;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
+import com.sip.shortnews.Utilies.Config;
+import com.sip.shortnews.config.ServerConfig;
 import com.sip.shortnews.view_customize.SlidingTabLayout;
 import com.sip.shortnews.adapter.FragmentAdapter;
 import com.sip.shortnews.adapter.MenuAdapter;
@@ -26,6 +34,7 @@ import com.sip.shortnews.fragment.NewsFragment;
 import com.sip.shortnews.fragment.PFragment;
 import com.sip.shortnews.fragment.SocialFragment;
 import com.sip.shortnews.model.MenuItemCustomize;
+import com.zl.reik.dilatingdotsprogressbar.DilatingDotsProgressBar;
 
 import java.util.ArrayList;
 import java.util.Stack;
@@ -39,6 +48,11 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
     private ImageView mNavigateMenu;
     private TextView mTitlel;
     private Stack<String> mStackTitle;
+    private FirebaseRemoteConfig mFirebaseRemoteConfig;
+    private RelativeLayout mLoadProgress;
+    ViewPager mViewPager;
+    SlidingTabLayout mSlidingTabLayout;
+    DilatingDotsProgressBar mDilatingDotsProgressBar;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,47 +60,31 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         setContentView(R.layout.main_activity);
         generateMenu();
         mNavigateMenu = (ImageView)findViewById(R.id.navigate);
-        SlidingTabLayout slidingTabLayout = (SlidingTabLayout)findViewById(R.id.sliding_tabs);
-        final ViewPager viewPager = (ViewPager)findViewById(R.id.view_page);
+        mSlidingTabLayout = (SlidingTabLayout)findViewById(R.id.sliding_tabs);
+        mViewPager = (ViewPager)findViewById(R.id.view_page);
         mTitlel = (TextView)findViewById(R.id.header_title);
         mFragmentManager = getSupportFragmentManager();
         ImageView menu = (ImageView)findViewById(R.id.navigate);
         TextView textView = (TextView)findViewById(R.id.day_left);
+        mLoadProgress = (RelativeLayout)findViewById(R.id.load_progress);
+        mDilatingDotsProgressBar = (DilatingDotsProgressBar) findViewById(R.id.progress);
+        mDilatingDotsProgressBar.show();
+        mLoadProgress.setVisibility(View.VISIBLE);
         Typeface typeface = Typeface.createFromAsset(getAssets(),"fonts/brush.ttf");
         textView.setTypeface(typeface);
         menu.setOnClickListener(this);
-        FragmentAdapter fragmentAdapter = new FragmentAdapter(mFragmentManager);
-        viewPager.setAdapter(fragmentAdapter);
-        slidingTabLayout.setOnclickMenu(this);
-        slidingTabLayout.setViewPager(viewPager);
-
-//        final ActionBar actionBar = getActionBar();
-//        actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
-//        ActionBar.TabListener tabListener = new ActionBar.TabListener() {
-//            @Override
-//            public void onTabSelected(ActionBar.Tab tab, android.app.FragmentTransaction ft) {
-//                viewPager.setCurrentItem(tab.getPosition());
-//            }
-//
-//            @Override
-//            public void onTabUnselected(ActionBar.Tab tab, android.app.FragmentTransaction ft) {
-//
-//            }
-//
-//            @Override
-//            public void onTabReselected(ActionBar.Tab tab, android.app.FragmentTransaction ft) {
-//
-//            }
-//        };
-//        for(int i =0;i<2;i++){
-//            if(i == 0)
-//                actionBar.newTab().setText("Bao chi").setTabListener(tabListener);
-//            actionBar.newTab().setText("Mang xa hoi").setTabListener(tabListener);
-//        }
-//        NewsFragment contentFragment = new NewsFragment();
-//        SocialFragment socialFragment = new SocialFragment();
-//        replaceForground(socialFragment);
+        getFirebaseConfig();
     }
+
+    private void loadFragment(){
+        FragmentAdapter fragmentAdapter = new FragmentAdapter(mFragmentManager);
+        mViewPager.setAdapter(fragmentAdapter);
+        mSlidingTabLayout.setOnclickMenu(this);
+        mSlidingTabLayout.setViewPager(mViewPager);
+        mDilatingDotsProgressBar.hide();
+        mLoadProgress.setVisibility(View.GONE);
+    }
+
     public void replaceForground (PFragment fragment){
         if(mIsBackgroundOnTop){
             popBackStack();
@@ -203,4 +201,39 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         MenuAdapter menuAdapter = new MenuAdapter(this,R.layout.item_menu,menuItemArrayList);
         listView.setAdapter(menuAdapter);
     }
+    private void getFirebaseConfig() {
+        mFirebaseRemoteConfig = FirebaseRemoteConfig.getInstance();
+        mFirebaseRemoteConfig.setDefaults(R.xml.default_firebase_config);
+
+        ServerConfig.setDefault_domain(mFirebaseRemoteConfig.getString("default_domain_in_local"));
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                mFirebaseRemoteConfig.fetch(0)
+                        .addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                if (task.isSuccessful()) {
+                                    Toast.makeText(getApplicationContext(), "Fetch Succeeded",
+                                            Toast.LENGTH_SHORT).show();
+
+                                    // Once the config is successfully fetched it must be activated before newly fetched
+                                    // values are returned.
+                                    mFirebaseRemoteConfig.activateFetched();
+                                    ServerConfig.setDefault_domain(mFirebaseRemoteConfig.getString("default_domain"));
+                                    loadFragment();
+                                }else {
+                                    Toast.makeText(getApplicationContext(), "Fetch fail",
+                                            Toast.LENGTH_SHORT).show();
+                                    loadFragment();
+                                }
+                            }
+                        });
+            }
+        },500);
+
+
+    }
+
 }

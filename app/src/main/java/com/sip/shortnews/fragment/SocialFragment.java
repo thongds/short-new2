@@ -3,11 +3,13 @@ package com.sip.shortnews.fragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.sip.shortnews.MainActivity;
 import com.sip.shortnews.R;
@@ -27,13 +29,27 @@ import retrofit2.Response;
  */
 public class SocialFragment extends PFragment {
     private LinearLayoutManager mLayoutManager;
+    private SwipeRefreshLayout mRefresh;
+    private RecyclerView mRecyclerView;
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.social_holder_layout,container,false);
-        final RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.recycle_view);
+        mRecyclerView = (RecyclerView) view.findViewById(R.id.recycle_view);
         mLayoutManager = new LinearLayoutManager(getActivity());
-        recyclerView.setLayoutManager(mLayoutManager);
+        mRecyclerView.setLayoutManager(mLayoutManager);
+        mRefresh = (SwipeRefreshLayout)view.findViewById(R.id.refresh);
+        mRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                callApi();
+            }
+        });
+        callApi();
+        return view;
+    }
+
+    private void callApi() {
         HomeMediaService.service().getSocial().enqueue(new Callback<List<SocialMediaItem>>() {
             @Override
             public void onResponse(Call<List<SocialMediaItem>> call, Response<List<SocialMediaItem>> response) {
@@ -41,17 +57,20 @@ public class SocialFragment extends PFragment {
                     List<SocialMediaItem> socialMediaItems = response.body();
 
                     SocialMediaAdapter socialMediaAdapter = new SocialMediaAdapter(socialMediaItems, detailClickListener);
-                    recyclerView.setAdapter(socialMediaAdapter);
+                    mRecyclerView.setAdapter(socialMediaAdapter);
+                    mRefresh.setRefreshing(false);
                 }
             }
 
             @Override
             public void onFailure(Call<List<SocialMediaItem>> call, Throwable t) {
+                Toast.makeText(getContext(),"network error!",Toast.LENGTH_LONG).show();
+                mRefresh.setRefreshing(false);
                 t.printStackTrace();
             }
         });
-        return view;
     }
+
     SocialMediaAdapter.VH.DetailClickListener  detailClickListener = new SocialMediaAdapter.VH.DetailClickListener() {
         @Override
         public void showDetail(int position, List<SocialMediaItem> data) {

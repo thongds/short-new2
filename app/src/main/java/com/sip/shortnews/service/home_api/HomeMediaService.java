@@ -1,5 +1,6 @@
 package com.sip.shortnews.service.home_api;
 
+import com.sip.shortnews.config.ServerConfig;
 import com.sip.shortnews.model.NewsHomeItem;
 import com.sip.shortnews.model.SocialMediaItem;
 
@@ -19,7 +20,7 @@ public class HomeMediaService {
 
     public static Service service (){
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://192.168.1.164/blog/public/").addConverterFactory(GsonConverterFactory.create())
+                .baseUrl(ServerConfig.getDefault_domain()).addConverterFactory(GsonConverterFactory.create())
                 .build();
 
         Service service = retrofit.create(Service.class);

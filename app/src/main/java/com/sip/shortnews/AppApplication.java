@@ -1,7 +1,13 @@
 package com.sip.shortnews;
 
 import android.app.Application;
+import android.support.annotation.NonNull;
+import android.util.Log;
+import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.nostra13.universalimageloader.cache.disc.impl.UnlimitedDiskCache;
 import com.nostra13.universalimageloader.cache.disc.naming.HashCodeFileNameGenerator;
 import com.nostra13.universalimageloader.cache.memory.impl.LruMemoryCache;
@@ -18,6 +24,7 @@ import java.io.File;
  * Created by ssd on 8/28/16.
  */
 public class AppApplication extends Application {
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -45,4 +52,5 @@ public class AppApplication extends Application {
         ImageLoader.getInstance().init(config);
 
     }
+
 }
