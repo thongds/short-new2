@@ -24,8 +24,8 @@
         android:layout_toRightOf="@id/icon_menu_left"
         android:layout_alignBottom="@id/icon_menu_left"
         android:layout_alignTop="@id/icon_menu_left"
-        android:text="Social/crime/goverment"
-        android:textColor="@color/colorBlack"
+        android:text="Vnexpress"
+        android:textColor="@color/colorVnexpress"
         android:textSize="20sp"/>
     <!--<com.mikhaellopez.circularimageview.CircularImageView-->
         <!---->

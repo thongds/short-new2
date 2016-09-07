@@ -93,7 +93,7 @@ public class CardAdapter extends PagerAdapter {
         }
 
         container.addView(cardView);
-        cardView.setMaxCardElevation(18);
+        cardView.setMaxCardElevation(8);
         int padding = UtiliFunction.dpTopxInt(mContext,2);
         cardView.setContentPadding(-padding,-padding,-padding,-padding);
         mViews.add(cardView);

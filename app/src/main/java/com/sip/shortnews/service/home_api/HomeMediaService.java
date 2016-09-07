@@ -19,7 +19,7 @@ public class HomeMediaService {
 
     public static Service service (){
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://192.168.1.101/blog/public/").addConverterFactory(GsonConverterFactory.create())
+                .baseUrl("http://192.168.1.164/blog/public/").addConverterFactory(GsonConverterFactory.create())
                 .build();
 
         Service service = retrofit.create(Service.class);
