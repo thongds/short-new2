@@ -63,7 +63,7 @@ public class NewsFragment extends PFragment {
             public void onResponse(Call<List<NewsHomeItem>> call, Response<List<NewsHomeItem>> response) {
                 response.isSuccessful();
                 List<NewsHomeItem> list = response.body();
-                NewsMediaAdapter newsMediaAdapter = new NewsMediaAdapter(list,ifItemClick);
+                NewsMediaAdapter newsMediaAdapter = new NewsMediaAdapter(mainActivity,list,ifItemClick);
                 mRecyclerView.setAdapter(newsMediaAdapter);
                 mRecyclerView.addOnScrollListener(onScrollListener);
                 mRefresh.setRefreshing(false);

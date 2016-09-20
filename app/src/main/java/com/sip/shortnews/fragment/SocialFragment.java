@@ -1,6 +1,7 @@
 package com.sip.shortnews.fragment;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -9,8 +10,16 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.bumptech.glide.BitmapRequestBuilder;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.load.resource.drawable.GlideDrawable;
+import com.bumptech.glide.load.resource.transcode.BitmapToGlideDrawableTranscoder;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 import com.sip.shortnews.MainActivity;
 import com.sip.shortnews.R;
 import com.sip.shortnews.VideoYoutubePlayerActivity;
@@ -56,7 +65,7 @@ public class SocialFragment extends PFragment {
                 if(response.isSuccessful()) {
                     List<SocialMediaItem> socialMediaItems = response.body();
 
-                    SocialMediaAdapter socialMediaAdapter = new SocialMediaAdapter(socialMediaItems, detailClickListener);
+                    SocialMediaAdapter socialMediaAdapter = new SocialMediaAdapter(getActivity(),socialMediaItems, detailClickListener);
                     mRecyclerView.setAdapter(socialMediaAdapter);
                     mRefresh.setRefreshing(false);
                 }
@@ -75,20 +84,22 @@ public class SocialFragment extends PFragment {
         @Override
         public void showDetail(int position, List<SocialMediaItem> data) {
             MainActivity mainActivity = (MainActivity)getActivity();
-            if(data.get(position).getIs_video() == 1){
-
+            if(data.get(position).getSocial_content_type_id() == 0){
+                String[] splitData = data.get(position).getPost_image_url().split(data.get(position).getSeparate_image_tag());
                 if(data.get(position).getSocial_name().equals("youtube")){
-                    //VideoYoutubePlayerFragment videoYoutubePlayerFragment = new VideoYoutubePlayerFragment();
-                    //videoYoutubePlayerFragment.setUrl(data.get(position).getVideo_link());
-                    //mainActivity.replaceBackground(videoYoutubePlayerFragment);
                     Intent intent = new Intent(mainActivity, VideoYoutubePlayerActivity.class);
-                    intent.putExtra("ytID",data.get(position).getVideo_link());
+                    intent.putExtra("ytID",splitData[0]);
                     startActivity(intent);
                     mainActivity.overridePendingTransition(R.anim.from_main_slide_in, R.anim.from_main_silde_out);
                 }else {
-                    VideoPlayerFragment videoPlayerFragment = new VideoPlayerFragment();
-                    videoPlayerFragment.setVideoUlr(data.get(position).getVideo_link());
-                    mainActivity.replaceBackground(videoPlayerFragment);
+                    if(data.get(position).getPost_image_url()!=null && !data.get(position).getPost_image_url().isEmpty()) {
+                        VideoPlayerFragment videoPlayerFragment = new VideoPlayerFragment();
+                        videoPlayerFragment.setVideoUlr(splitData[0]);
+                        mainActivity.replaceBackground(videoPlayerFragment);
+                    }
+                    else{
+                        Toast.makeText(getContext(),"can not play video now",Toast.LENGTH_LONG).show();
+                    }
                 }
             }else{
                 DetailViewPageFragment detailViewPageFragment = new DetailViewPageFragment();
@@ -99,5 +110,6 @@ public class SocialFragment extends PFragment {
 
         }
     };
+
 
 }

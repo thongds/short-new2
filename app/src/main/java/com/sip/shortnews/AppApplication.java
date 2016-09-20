@@ -1,6 +1,7 @@
 package com.sip.shortnews;
 
 import android.app.Application;
+import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.util.Log;
 import android.widget.Toast;
@@ -33,6 +34,8 @@ public class AppApplication extends Application {
 
     private void initImageLoaderSetting() {
         File cacheDir = StorageUtils.getCacheDirectory(getApplicationContext());
+        DisplayImageOptions displayImageOptions = new DisplayImageOptions.Builder().cacheInMemory(true).cacheOnDisk(true)
+                .build();
         ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(getApplicationContext())
                 .memoryCacheExtraOptions(480, 800) // default = device screen dimensions
                 .diskCacheExtraOptions(480, 800, null)
@@ -46,7 +49,7 @@ public class AppApplication extends Application {
                 .diskCacheFileNameGenerator(new HashCodeFileNameGenerator()) // default
                 .imageDownloader(new BaseImageDownloader(getApplicationContext())) // default
                 .imageDecoder(new BaseImageDecoder(true)) // default
-                .defaultDisplayImageOptions(DisplayImageOptions.createSimple()) // default
+                .defaultDisplayImageOptions(displayImageOptions) // default
                 .writeDebugLogs()
                 .build();
         ImageLoader.getInstance().init(config);

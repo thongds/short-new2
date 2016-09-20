@@ -89,13 +89,19 @@
                 android:layout_marginTop="2dp"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
+                <WebView
+                    android:visibility="visible"
+                    android:id="@+id/webview_list"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                </WebView>
                 <ImageView
                     android:id="@+id/post_content"
                     android:clickable="true"
                     android:scaleType="centerCrop"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:src="@drawable/youtube_post"/>
+                    android:layout_height="match_parent"/>
                 <ImageView
                     android:id="@+id/play_image_social"
                     android:visibility="invisible"

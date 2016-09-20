@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.devbrackets.android.exomedia.listener.OnPreparedListener;
 import com.devbrackets.android.exomedia.ui.widget.EMVideoView;
@@ -40,7 +41,12 @@ public class VideoPlayerFragment extends  PFragment implements OnPreparedListene
 
             //For now we just picked an arbitrary item to play.  More can be found at
             //https://archive.org/details/more_animation
-            mPlayerView.setVideoURI(Uri.parse(mVideoUrl));
+            if(mVideoUrl!=null && !mVideoUrl.isEmpty()){
+                mPlayerView.setVideoURI(Uri.parse(mVideoUrl));
+            }else{
+                Toast.makeText(getContext(),"can not play video now",Toast.LENGTH_LONG).show();
+            }
+
 
         return v;
     }

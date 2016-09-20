@@ -1,6 +1,7 @@
 package com.sip.shortnews.fragment;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.view.ViewPager;
@@ -66,15 +67,26 @@ public class DetailViewPageFragment extends PFragment implements CardAdapter.IFC
     }
     @Override
     public void onClickVideo(SocialMediaItem socialMediaItem) {
-        if(socialMediaItem.getSocial_name().equals("youtube")){
-            Intent intent = new Intent(mainActivity, VideoYoutubePlayerActivity.class);
-            intent.putExtra("ytID",socialMediaItem.getVideo_link());
-            startActivity(intent);
-            mainActivity.overridePendingTransition(R.anim.from_main_slide_in, R.anim.from_main_silde_out);
-        }else {
-            VideoPlayerFragment videoPlayerFragment = new VideoPlayerFragment();
-            videoPlayerFragment.setVideoUlr(socialMediaItem.getVideo_link());
-            mainActivity.replaceBackground(videoPlayerFragment);
+        if(socialMediaItem.getPost_image_url()==null && socialMediaItem.getPost_image_url().isEmpty()){
+            Toast.makeText(getContext(),"can not play video now",Toast.LENGTH_LONG).show();
+            return;
         }
+        String[] links = socialMediaItem.getPost_image_url().split(socialMediaItem.getSeparate_image_tag());
+        if(links ==null){
+            Toast.makeText(getContext(),"can not play video now",Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        if(socialMediaItem.getSocial_name().equals("youtube")){
+                Intent intent = new Intent(mainActivity, VideoYoutubePlayerActivity.class);
+                intent.putExtra("ytID",links[0]);
+                startActivity(intent);
+                mainActivity.overridePendingTransition(R.anim.from_main_slide_in, R.anim.from_main_silde_out);
+        }else {
+                VideoPlayerFragment videoPlayerFragment = new VideoPlayerFragment();
+                videoPlayerFragment.setVideoUlr(links[0]);
+                mainActivity.replaceBackground(videoPlayerFragment);
+        }
+
     }
 }

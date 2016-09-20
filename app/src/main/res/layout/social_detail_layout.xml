@@ -85,16 +85,23 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Trời mưa trời bão lỡ có việc ra đường thì đỗ né né mấy cái cây cổ thụ ra... Xe ơi là xe :'( Xót hết cả ruột..."/>
+
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_below="@id/status_title"
                 >
+                <ImageView
+                    android:id="@+id/post_image_content"
+                    android:scaleType="centerCrop"
+                    android:layout_width="match_parent"
+                    android:layout_height="300dp"/>
                 <LinearLayout
                     android:id="@+id/slider_ll"
                     android:layout_width="wrap_content"
                     android:orientation="vertical"
                     android:layout_height="400dp">
+
                     <android.support.v4.view.ViewPager
                         android:id="@+id/main_slide"
                         android:layout_width="match_parent"
@@ -113,10 +120,7 @@
 
                 </com.sip.shortnews.view_customize.IndicatorViewPager>
                 </LinearLayout>
-                <ImageView
-                    android:id="@+id/post_image_content"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"/>
+
                 <ImageView
                     android:id="@+id/play_button"
                     android:visibility="invisible"
