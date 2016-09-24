@@ -37,6 +37,7 @@
                 android:text="Facebook"/>
         </LinearLayout>
     <ScrollView
+        android:id="@+id/scrollImage"
         android:layout_below="@id/detail_header"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -127,6 +128,13 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:src="@drawable/play_control"
+                    android:layout_centerInParent="true"/>
+                <ImageView
+                    android:id="@+id/gif_play_button"
+                    android:visibility="invisible"
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:src="@drawable/gif_ico_"
                     android:layout_centerInParent="true"/>
             </RelativeLayout>
         </RelativeLayout>

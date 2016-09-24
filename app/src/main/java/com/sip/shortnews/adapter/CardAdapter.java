@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.webkit.WebView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.bumptech.glide.BitmapRequestBuilder;
@@ -69,14 +70,17 @@ public class CardAdapter extends PagerAdapter {
         TextView fanpageName = (TextView)v.findViewById(R.id.fanpage_name);
         CircularImageView fanpageAvatar =  (CircularImageView)v.findViewById(R.id.fanpage_avatar);
         TextView statusTitle = (TextView)v.findViewById(R.id.status_title);
+        final ScrollView scrollView = (ScrollView)v.findViewById(R.id.scrollImage);
         final ImageView postImage = (ImageView)v.findViewById(R.id.post_image_content);
         final ImageView playButton = (ImageView)v.findViewById(R.id.play_button);
+        final ImageView gifPlayButton = (ImageView)v.findViewById(R.id.gif_play_button);
 
         switch (socialMediaItem.getSocial_content_type_id()){
 
             case 0:
                 postImage.setVisibility(View.VISIBLE);
                 playButton.setVisibility(View.VISIBLE);
+                gifPlayButton.setVisibility(View.INVISIBLE);
                 llSliderParent.setVisibility(View.GONE);
                 if(links.length>1)
                     ImageLoader.getInstance().displayImage(links[1],postImage);
@@ -84,7 +88,14 @@ public class CardAdapter extends PagerAdapter {
 
             case 1:
                 playButton.setVisibility(View.INVISIBLE);
+                gifPlayButton.setVisibility(View.INVISIBLE);
                 if(links.length>1){
+                    scrollView.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            scrollView.fullScroll(View.FOCUS_DOWN);
+                        }
+                    });
                     postImage.setVisibility(View.GONE);
                     llSliderParent.setVisibility(View.VISIBLE);
                     ViewPager mainSlider = (ViewPager)v.findViewById(R.id.main_slide);
@@ -99,7 +110,8 @@ public class CardAdapter extends PagerAdapter {
             break;
 
             case 2:
-                playButton.setVisibility(View.VISIBLE);
+                playButton.setVisibility(View.INVISIBLE);
+                gifPlayButton.setVisibility(View.VISIBLE);
                 postImage.setVisibility(View.VISIBLE);
                 llSliderParent.setVisibility(View.GONE);
                 final Uri uri = Uri.parse(links[0]);
@@ -114,8 +126,10 @@ public class CardAdapter extends PagerAdapter {
                         .error(R.drawable.loading)
                         .fitCenter();
                 thumbRequest.into(postImage);
-                postImage.setOnClickListener(new View.OnClickListener() { // or any parent of imgFeed
+
+                gifPlayButton.setOnClickListener(new View.OnClickListener() { // or any parent of imgFeed
                     @Override public void onClick(View v) {
+                        gifPlayButton.setVisibility(View.INVISIBLE);
                         Glide
                                 .with(mContext)
                                 .load(uri) // load as usual (Gif as animated, other formats as Bitmap)
@@ -127,27 +141,7 @@ public class CardAdapter extends PagerAdapter {
                                 .into(postImage);
                     }
                 });
-//                Glide
-//                 .with(mContext)
-//                 .load(uri) // load as usual (Gif as animated, other formats as Bitmap)
-//                 .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-//                 .placeholder(R.drawable.loading)
-//                 .error(R.drawable.loading)
-//                 .thumbnail(thumbRequest)
-//                 .listener(new RequestListener<Uri, GlideDrawable>() {
-//                    @Override
-//                    public boolean onException(Exception e, Uri model, Target<GlideDrawable> target, boolean isFirstResource) {
-//                        return false;
-//                    }
-//
-//                    @Override
-//                    public boolean onResourceReady(GlideDrawable resource, Uri model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
-//                        playButton.setVisibility(View.INVISIBLE);
-//                        resource.start();
-//                        return false;
-//                    }
-//                 })
-//                 .into(postImage);
+
             break;
 
         }

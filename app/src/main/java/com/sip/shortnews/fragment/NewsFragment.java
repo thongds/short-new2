@@ -5,20 +5,20 @@ import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.RecyclerView.OnScrollListener;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AbsListView;
 import android.widget.Toast;
 
 import com.sip.shortnews.MainActivity;
 import com.sip.shortnews.R;
 import com.sip.shortnews.adapter.NewsMediaAdapter;
+import com.sip.shortnews.listener.EndlessRecyclerViewScrollListener;
 import com.sip.shortnews.model.NewsHomeItem;
 import com.sip.shortnews.service.home_api.HomeMediaService;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
@@ -33,40 +33,63 @@ public class NewsFragment extends PFragment {
     private MainActivity mainActivity;
     private SwipeRefreshLayout mRefresh;
     private  RecyclerView mRecyclerView;
+    private  EndlessRecyclerViewScrollListener mScrollListener ;
+    private  List<NewsHomeItem> mList;
+    private NewsMediaAdapter mNewsMediaAdapter;
+    private int mPage = 0;
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.news_medial_holder_layout,container,false);
         mRecyclerView = (RecyclerView) view.findViewById(R.id.recycle_view);
-        mLayoutManager = new LinearLayoutManager(getActivity());
+        mLayoutManager = new LinearLayoutManager(getContext());
         mainActivity = (MainActivity)getActivity();
         mRecyclerView.setLayoutManager(mLayoutManager);
+        mList = new ArrayList<>();
+        mNewsMediaAdapter = new NewsMediaAdapter(mainActivity,mList,ifItemClick);
+        mRecyclerView.setAdapter(mNewsMediaAdapter);
+
+        mScrollListener = new EndlessRecyclerViewScrollListener(mLayoutManager) {
+            @Override
+            public void onLoadMore(int page, int totalItemsCount) {
+                mPage = page;
+                callService(mPage,false);
+            }
+        };
+        mRecyclerView.addOnScrollListener(mScrollListener);
         mRefresh = (SwipeRefreshLayout)view.findViewById(R.id.refresh);
         mRefresh.setEnabled(true);
         mRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
                 if(mRefresh.isNestedScrollingEnabled()){
-                    callService();
+                    mList.clear();
+                    callService(0,true);
                 }
             }
         });
-        callService();
+        callService(mPage,false);
 
         return view;
     }
 
-    private void callService() {
+    private void callService(int page,final boolean isRefreshing) {
         HomeMediaService.Service service = HomeMediaService.service();
-        service.getNews().enqueue(new Callback<List<NewsHomeItem>>() {
+        service.getNews(page).enqueue(new Callback<List<NewsHomeItem>>() {
             @Override
             public void onResponse(Call<List<NewsHomeItem>> call, Response<List<NewsHomeItem>> response) {
-                response.isSuccessful();
-                List<NewsHomeItem> list = response.body();
-                NewsMediaAdapter newsMediaAdapter = new NewsMediaAdapter(mainActivity,list,ifItemClick);
-                mRecyclerView.setAdapter(newsMediaAdapter);
-                mRecyclerView.addOnScrollListener(onScrollListener);
-                mRefresh.setRefreshing(false);
+                if(response.isSuccessful()) {
+                    if(response.body().size() >0){
+                        mList.addAll(response.body());
+                        mNewsMediaAdapter.notifyDataSetChanged();
+                    }else {
+
+                    }
+                    if(isRefreshing){
+                        mRefresh.setRefreshing(false);
+                        mScrollListener.reset();
+                    }
+                }
             }
 
             @Override
@@ -79,25 +102,7 @@ public class NewsFragment extends PFragment {
         });
     }
 
-    OnScrollListener onScrollListener = new OnScrollListener() {
-        @Override
-        public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-            super.onScrollStateChanged(recyclerView, newState);
-            if (newState == AbsListView.OnScrollListener.SCROLL_STATE_FLING) {
-                // Do something
-            } else if (newState == AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL) {
-                // Do something
-            } else {
-                // Do something
-            }
 
-        }
-
-        @Override
-        public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-            super.onScrolled(recyclerView, dx, dy);
-        }
-    };
     NewsMediaAdapter.IFItemClick ifItemClick = new NewsMediaAdapter.IFItemClick() {
         @Override
         public void clickVideo(NewsHomeItem data) {

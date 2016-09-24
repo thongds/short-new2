@@ -80,7 +80,6 @@ public class SocialMediaAdapter extends RecyclerView.Adapter<SocialMediaAdapter.
         TextView mPageName;
         ImageView mPlayImage;
         ImageView mYoutubePlay;
-        WebView mWebView;
         int mClickPosition;
         DetailClickListener mDetailClickListener;
         public VH(View v ,DetailClickListener detailClickListener) {
@@ -89,7 +88,6 @@ public class SocialMediaAdapter extends RecyclerView.Adapter<SocialMediaAdapter.
             mSocialLogo = (ImageView)v.findViewById(R.id.paper_logo);
             mPageLogo = (ImageView)v.findViewById(R.id.post_image);
             mPostImage = (ImageView)v.findViewById(R.id.post_content);
-            mWebView = (WebView)v.findViewById(R.id.webview_list);
             mTagPost = (RelativeLayout)v.findViewById(R.id.corner_left);
             mVideoTag = (ImageView)v.findViewById(R.id.video_tag);
             mPostTitle = (TextView)v.findViewById(R.id.post_title);
@@ -113,7 +111,6 @@ public class SocialMediaAdapter extends RecyclerView.Adapter<SocialMediaAdapter.
             mClickPosition = clickPosition;
             switch (socialMediaItem.getSocial_content_type_id()){
                 case 0://video
-                    mWebView.setVisibility(View.GONE);
                     ImageLoader.getInstance().displayImage(socialMediaItem.getVideo_tag(),mVideoTag);
                     if(post_image!=null &&post_image.length>1)
                         //ImageLoader.getInstance().displayImage(post_image[1],mPostImage,displayImageOptions);
@@ -133,7 +130,6 @@ public class SocialMediaAdapter extends RecyclerView.Adapter<SocialMediaAdapter.
                     mYoutubePlay.setVisibility(View.INVISIBLE);
                     mPlayImage.setVisibility(View.INVISIBLE);
                     mVideoTag.setVisibility(View.INVISIBLE);
-                    mWebView.setVisibility(View.GONE);
                     if(post_image!=null &&post_image.length>0)
                         //ImageLoader.getInstance().displayImage(post_image[0],mPostImage,displayImageOptions);
                         playImage(context,post_image[0],mPostImage);
@@ -143,7 +139,6 @@ public class SocialMediaAdapter extends RecyclerView.Adapter<SocialMediaAdapter.
                     mPlayImage.setVisibility(View.INVISIBLE);
                     mVideoTag.setVisibility(View.INVISIBLE);
                     mPostImage.setVisibility(View.VISIBLE);
-                    mWebView.setVisibility(View.GONE);
                     //Glide.with(context).load(post_image[0]).diskCacheStrategy(DiskCacheStrategy.SOURCE).into(mPostImage);
 
                     final Uri uri = Uri.parse(post_image[0]);
@@ -156,7 +151,7 @@ public class SocialMediaAdapter extends RecyclerView.Adapter<SocialMediaAdapter.
                             .placeholder(R.drawable.youtube_logo)
                             .dontAnimate().dontTransform()
                             .error(R.drawable.loading)
-                            .fitCenter();
+                            .centerCrop();
                     thumbRequest.into(mPostImage);
                     mPostImage.setOnClickListener(new View.OnClickListener() { // or any parent of imgFeed
                         @Override public void onClick(View v) {
@@ -166,7 +161,7 @@ public class SocialMediaAdapter extends RecyclerView.Adapter<SocialMediaAdapter.
                                     .load(uri) // load as usual (Gif as animated, other formats as Bitmap)
                                     .diskCacheStrategy(DiskCacheStrategy.SOURCE)
                                     .placeholder(R.drawable.youtube_logo)
-                                    .error(R.drawable.loading)
+                                    .error(R.drawable.loading).centerCrop()
                                     .thumbnail(thumbRequest)
                                     .dontAnimate()
                                     .into(mPostImage);
@@ -196,7 +191,7 @@ public class SocialMediaAdapter extends RecyclerView.Adapter<SocialMediaAdapter.
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .placeholder(R.drawable.loading)
                     .error(R.drawable.loading)
-                    .fitCenter();
+                    .centerCrop();
             thumbRequest.into(postImage);
 
             Glide
@@ -204,7 +199,7 @@ public class SocialMediaAdapter extends RecyclerView.Adapter<SocialMediaAdapter.
                     .load(uri) // load as usual (Gif as animated, other formats as Bitmap)
                     .diskCacheStrategy(DiskCacheStrategy.SOURCE)
                     .placeholder(R.drawable.loading)
-                    .error(R.drawable.loading)
+                    .error(R.drawable.loading).centerCrop()
                     .thumbnail(thumbRequest)
                     .into(postImage);
         }
