@@ -24,9 +24,12 @@ import com.sip.shortnews.MainActivity;
 import com.sip.shortnews.R;
 import com.sip.shortnews.VideoYoutubePlayerActivity;
 import com.sip.shortnews.adapter.SocialMediaAdapter;
+import com.sip.shortnews.listener.EndlessRecyclerViewScrollListener;
+import com.sip.shortnews.model.NewsHomeItem;
 import com.sip.shortnews.model.SocialMediaItem;
 import com.sip.shortnews.service.home_api.HomeMediaService;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
@@ -40,34 +43,57 @@ public class SocialFragment extends PFragment {
     private LinearLayoutManager mLayoutManager;
     private SwipeRefreshLayout mRefresh;
     private RecyclerView mRecyclerView;
+    private EndlessRecyclerViewScrollListener mScrollListener ;
+    private  List<SocialMediaItem> mList;
+    private SocialMediaAdapter mSocialMediaAdapter;
+    private int mPage = 0;
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.social_holder_layout,container,false);
         mRecyclerView = (RecyclerView) view.findViewById(R.id.recycle_view);
         mLayoutManager = new LinearLayoutManager(getActivity());
+        mList = new ArrayList<>();
+        mSocialMediaAdapter = new SocialMediaAdapter(getActivity(),mList, detailClickListener);
+        mRecyclerView.setAdapter(mSocialMediaAdapter);
+        mScrollListener = new EndlessRecyclerViewScrollListener(mLayoutManager) {
+            @Override
+            public void onLoadMore(int page, int totalItemsCount) {
+                mPage = page;
+                callService(mPage,false);
+            }
+        };
         mRecyclerView.setLayoutManager(mLayoutManager);
+        mRecyclerView.addOnScrollListener(mScrollListener);
         mRefresh = (SwipeRefreshLayout)view.findViewById(R.id.refresh);
         mRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                callApi();
+                if(mRefresh.isNestedScrollingEnabled()){
+                    mList.clear();
+                    callService(0,true);
+                }
             }
         });
-        callApi();
+        callService(mPage,false);
         return view;
     }
 
-    private void callApi() {
-        HomeMediaService.service().getSocial().enqueue(new Callback<List<SocialMediaItem>>() {
+    private void callService(int page,final boolean isRefreshing) {
+        HomeMediaService.service().getSocial(page).enqueue(new Callback<List<SocialMediaItem>>() {
             @Override
             public void onResponse(Call<List<SocialMediaItem>> call, Response<List<SocialMediaItem>> response) {
                 if(response.isSuccessful()) {
-                    List<SocialMediaItem> socialMediaItems = response.body();
+                    if(response.body().size()>0){
+                        mList.addAll(response.body());
+                        mSocialMediaAdapter.notifyDataSetChanged();
 
-                    SocialMediaAdapter socialMediaAdapter = new SocialMediaAdapter(getActivity(),socialMediaItems, detailClickListener);
-                    mRecyclerView.setAdapter(socialMediaAdapter);
-                    mRefresh.setRefreshing(false);
+                    }
+                    if(isRefreshing){
+                        mRefresh.setRefreshing(false);
+                        mScrollListener.reset();
+                    }
+
                 }
             }
 
@@ -106,8 +132,6 @@ public class SocialFragment extends PFragment {
                 detailViewPageFragment.setArg(data,position);
                 mainActivity.replaceBackground(detailViewPageFragment);
             }
-
-
         }
     };
 

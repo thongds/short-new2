@@ -82,8 +82,6 @@ public class NewsFragment extends PFragment {
                     if(response.body().size() >0){
                         mList.addAll(response.body());
                         mNewsMediaAdapter.notifyDataSetChanged();
-                    }else {
-
                     }
                     if(isRefreshing){
                         mRefresh.setRefreshing(false);

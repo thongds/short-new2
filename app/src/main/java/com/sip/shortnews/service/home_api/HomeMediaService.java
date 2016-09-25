@@ -30,8 +30,8 @@ public class HomeMediaService {
     public interface Service {
         @GET("api/news/getnews/{page}")
         Call<List<NewsHomeItem>> getNews(@Path("page") int page);
-        @GET("api/news/getsocial")
-        Call<List<SocialMediaItem>> getSocial();
+        @GET("api/news/getsocial/{page}")
+        Call<List<SocialMediaItem>> getSocial(@Path("page") int page);
     }
 
 }
