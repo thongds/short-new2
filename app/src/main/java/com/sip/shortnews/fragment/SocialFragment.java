@@ -84,15 +84,17 @@ public class SocialFragment extends PFragment {
             @Override
             public void onResponse(Call<List<SocialMediaItem>> call, Response<List<SocialMediaItem>> response) {
                 if(response.isSuccessful()) {
+                    if(isRefreshing){
+                        mRefresh.setRefreshing(false);
+                        mScrollListener.reset();
+                        mList.clear();
+                    }
                     if(response.body().size()>0){
                         mList.addAll(response.body());
                         mSocialMediaAdapter.notifyDataSetChanged();
 
                     }
-                    if(isRefreshing){
-                        mRefresh.setRefreshing(false);
-                        mScrollListener.reset();
-                    }
+
 
                 }
             }

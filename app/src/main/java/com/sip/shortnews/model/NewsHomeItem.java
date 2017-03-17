@@ -20,17 +20,28 @@ public class NewsHomeItem {
      * video_tag_image : http://localhost/blog/public/uploads/1472095416phpkDYz4D.png
      */
 
+    private int id;
     private String post_title;
     private String post_content;
     private String post_image;
     private int is_video;
-    private int created;
+    private String created;
     private String video_link;
     private String full_link;
     private String title_color;
     private String paper_logo;
     private String paper_tag_color;
     private String video_tag_image;
+    private int is_ads;
+    private Object ads_code;
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 
     public String getPost_title() {
         return post_title;
@@ -64,11 +75,11 @@ public class NewsHomeItem {
         this.is_video = is_video;
     }
 
-    public int getCreated() {
+    public String getCreated() {
         return created;
     }
 
-    public void setCreated(int created) {
+    public void setCreated(String created) {
         this.created = created;
     }
 
@@ -118,5 +129,21 @@ public class NewsHomeItem {
 
     public void setVideo_tag_image(String video_tag_image) {
         this.video_tag_image = video_tag_image;
+    }
+
+    public int getIs_ads() {
+        return is_ads;
+    }
+
+    public void setIs_ads(int is_ads) {
+        this.is_ads = is_ads;
+    }
+
+    public Object getAds_code() {
+        return ads_code;
+    }
+
+    public void setAds_code(Object ads_code) {
+        this.ads_code = ads_code;
     }
 }

@@ -15,7 +15,9 @@ import com.sip.shortnews.MainActivity;
 import com.sip.shortnews.R;
 import com.sip.shortnews.adapter.NewsMediaAdapter;
 import com.sip.shortnews.listener.EndlessRecyclerViewScrollListener;
+import com.sip.shortnews.model.NewsHomeHeader;
 import com.sip.shortnews.model.NewsHomeItem;
+import com.sip.shortnews.model.NewsHomeSection;
 import com.sip.shortnews.service.home_api.HomeMediaService;
 
 import java.util.ArrayList;
@@ -35,6 +37,7 @@ public class NewsFragment extends PFragment {
     private  RecyclerView mRecyclerView;
     private  EndlessRecyclerViewScrollListener mScrollListener ;
     private  List<NewsHomeItem> mList;
+    private NewsHomeHeader mNewsHomeHeader;
     private NewsMediaAdapter mNewsMediaAdapter;
     private int mPage = 0;
     @Nullable
@@ -46,7 +49,7 @@ public class NewsFragment extends PFragment {
         mainActivity = (MainActivity)getActivity();
         mRecyclerView.setLayoutManager(mLayoutManager);
         mList = new ArrayList<>();
-        mNewsMediaAdapter = new NewsMediaAdapter(mainActivity,mList,ifItemClick);
+        mNewsMediaAdapter = new NewsMediaAdapter(mainActivity,mNewsHomeHeader,mList,ifItemClick);
         mRecyclerView.setAdapter(mNewsMediaAdapter);
 
         mScrollListener = new EndlessRecyclerViewScrollListener(mLayoutManager) {
@@ -73,15 +76,20 @@ public class NewsFragment extends PFragment {
         return view;
     }
 
-    private void callService(int page,final boolean isRefreshing) {
+    private void callService(final int page, final boolean isRefreshing) {
         HomeMediaService.Service service = HomeMediaService.service();
-        service.getNews(page).enqueue(new Callback<List<NewsHomeItem>>() {
+        service.getNews(page).enqueue(new Callback<NewsHomeSection>() {
             @Override
-            public void onResponse(Call<List<NewsHomeItem>> call, Response<List<NewsHomeItem>> response) {
+            public void onResponse(Call<NewsHomeSection> call, Response<NewsHomeSection> response) {
                 if(response.isSuccessful()) {
-                    if(response.body().size() >0){
-                        mList.addAll(response.body());
+                    if(response.body().getData().size() >0){
+                        mList.addAll(response.body().getData());
+                        if (page == 0){
+                            mNewsHomeHeader = response.body().getNewsHomeHeader();
+                            mNewsMediaAdapter.setmNewsHomeHeader(mNewsHomeHeader);
+                        }
                         mNewsMediaAdapter.notifyDataSetChanged();
+
                     }
                     if(isRefreshing){
                         mRefresh.setRefreshing(false);
@@ -91,7 +99,7 @@ public class NewsFragment extends PFragment {
             }
 
             @Override
-            public void onFailure(Call<List<NewsHomeItem>> call, Throwable t) {
+            public void onFailure(Call<NewsHomeSection> call, Throwable t) {
                 t.printStackTrace();
                 mRefresh.setRefreshing(false);
                 Toast.makeText(getContext(),"network error!",Toast.LENGTH_LONG).show();

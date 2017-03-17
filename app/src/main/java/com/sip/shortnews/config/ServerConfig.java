@@ -5,7 +5,7 @@ package com.sip.shortnews.config;
  */
 public class ServerConfig {
     public static String getDefault_domain() {
-        return default_domain;
+        return "http://localhost/ShortNews_Server/public/";
     }
 
     public static void setDefault_domain(String default_domain) {

@@ -2,6 +2,7 @@ package com.sip.shortnews.service.home_api;
 
 import com.sip.shortnews.config.ServerConfig;
 import com.sip.shortnews.model.NewsHomeItem;
+import com.sip.shortnews.model.NewsHomeSection;
 import com.sip.shortnews.model.SocialMediaItem;
 
 import java.util.List;
@@ -11,6 +12,7 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.http.GET;
 import retrofit2.http.Path;
+import retrofit2.http.Query;
 
 /**
  * Created by ssd on 8/27/16.
@@ -20,7 +22,7 @@ public class HomeMediaService {
 
     public static Service service (){
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(ServerConfig.getDefault_domain()).addConverterFactory(GsonConverterFactory.create())
+                .baseUrl("http://192.168.1.102/ShortNews_Server/public/").addConverterFactory(GsonConverterFactory.create())
                 .build();
 
         Service service = retrofit.create(Service.class);
@@ -28,8 +30,8 @@ public class HomeMediaService {
     }
 
     public interface Service {
-        @GET("api/news/getnews/{page}")
-        Call<List<NewsHomeItem>> getNews(@Path("page") int page);
+        @GET("api/news/getnews")
+        Call<NewsHomeSection> getNews(@Query("page") int page);
         @GET("api/news/getsocial/{page}")
         Call<List<SocialMediaItem>> getSocial(@Path("page") int page);
     }

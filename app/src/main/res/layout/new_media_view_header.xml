@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="50dp">
+<ImageView
+    android:id="@+id/session_logo"
+    android:layout_width="74dp"
+    android:layout_height="match_parent"
+    android:layout_alignParentTop="true"
+    android:layout_alignParentLeft="true"
+    android:layout_centerVertical="true"
+    android:scaleType = "fitXY"
+    android:src="@drawable/cloudmorning_2x"/>
+<TextView
+    android:id="@+id/session_label"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginLeft="20dp"
+    android:textColor="@color/colorWhite"
+    android:text="cac tin chinh sang nay"
+    android:layout_centerVertical="true"
+    android:layout_toRightOf="@+id/session_logo"/>
+<TextView
+    android:id="@+id/session_event"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_toRightOf="@+id/session_logo"
+    android:layout_below="@+id/session_label"
+    android:layout_marginLeft="20dp"/>
+</RelativeLayout>

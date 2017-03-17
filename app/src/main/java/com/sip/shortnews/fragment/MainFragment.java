@@ -30,6 +30,7 @@ public class MainFragment extends PFragment {
 
             }
         });
+
         return view;
     }
 
