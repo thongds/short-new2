@@ -13,20 +13,15 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.bumptech.glide.BitmapRequestBuilder;
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.load.resource.drawable.GlideDrawable;
-import com.bumptech.glide.load.resource.transcode.BitmapToGlideDrawableTranscoder;
-import com.bumptech.glide.request.RequestListener;
-import com.bumptech.glide.request.target.Target;
 import com.sip.shortnews.MainActivity;
 import com.sip.shortnews.R;
+import com.sip.shortnews.Utilies.SocialContentType;
 import com.sip.shortnews.VideoYoutubePlayerActivity;
 import com.sip.shortnews.adapter.SocialMediaAdapter;
 import com.sip.shortnews.listener.EndlessRecyclerViewScrollListener;
 import com.sip.shortnews.model.NewsHomeItem;
 import com.sip.shortnews.model.SocialMediaItem;
+import com.sip.shortnews.model.SocialMediaSection;
 import com.sip.shortnews.service.home_api.HomeMediaService;
 
 import java.util.ArrayList;
@@ -79,28 +74,29 @@ public class SocialFragment extends PFragment {
         return view;
     }
 
-    private void callService(int page,final boolean isRefreshing) {
-        HomeMediaService.service().getSocial(page).enqueue(new Callback<List<SocialMediaItem>>() {
+    private void callService(final int page, final boolean isRefreshing) {
+        HomeMediaService.service().getSocial(page).enqueue(new Callback<SocialMediaSection>() {
             @Override
-            public void onResponse(Call<List<SocialMediaItem>> call, Response<List<SocialMediaItem>> response) {
+            public void onResponse(Call<SocialMediaSection> call, Response<SocialMediaSection> response) {
                 if(response.isSuccessful()) {
+                    SocialMediaSection socialMediaSection = response.body();
                     if(isRefreshing){
                         mRefresh.setRefreshing(false);
                         mScrollListener.reset();
                         mList.clear();
                     }
-                    if(response.body().size()>0){
-                        mList.addAll(response.body());
+                    if(socialMediaSection.getData().size()>0){
+                        mList.addAll(socialMediaSection.getData());
+                        if(page == 0){
+                            mSocialMediaAdapter.setmHeaderModel(socialMediaSection.getMessage());
+                        }
                         mSocialMediaAdapter.notifyDataSetChanged();
-
                     }
-
-
                 }
             }
 
             @Override
-            public void onFailure(Call<List<SocialMediaItem>> call, Throwable t) {
+            public void onFailure(Call<SocialMediaSection> call, Throwable t) {
                 Toast.makeText(getContext(),"network error!",Toast.LENGTH_LONG).show();
                 mRefresh.setRefreshing(false);
                 t.printStackTrace();
@@ -112,9 +108,9 @@ public class SocialFragment extends PFragment {
         @Override
         public void showDetail(int position, List<SocialMediaItem> data) {
             MainActivity mainActivity = (MainActivity)getActivity();
-            if(data.get(position).getSocial_content_type_id() == 0){
+            if(data.get(position).getSocial_content_type_id() == SocialContentType.YOUTUBE.getValue()){
                 String[] splitData = data.get(position).getPost_image_url().split(data.get(position).getSeparate_image_tag());
-                if(data.get(position).getSocial_name().equals("youtube")){
+                if(data.get(position).getSocial_content_type_id() == SocialContentType.YOUTUBE.getValue()){
                     Intent intent = new Intent(mainActivity, VideoYoutubePlayerActivity.class);
                     intent.putExtra("ytID",splitData[0]);
                     startActivity(intent);

@@ -3,7 +3,7 @@ package com.sip.shortnews.model;
 /**
  * Created by ssd on 3/17/17.
  */
-public class NewsHomeHeader  {
+public class HeaderModel {
 
     /**
      * welcome_message : Các Tin Chính Sáng Nay 17/03/2017

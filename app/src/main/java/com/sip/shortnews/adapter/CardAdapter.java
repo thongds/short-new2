@@ -16,14 +16,6 @@ import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
-import com.bumptech.glide.BitmapRequestBuilder;
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.load.resource.drawable.GlideDrawable;
-import com.bumptech.glide.load.resource.gif.GifDrawable;
-import com.bumptech.glide.load.resource.transcode.BitmapToGlideDrawableTranscoder;
-import com.bumptech.glide.request.RequestListener;
-import com.bumptech.glide.request.target.Target;
 import com.mikhaellopez.circularimageview.CircularImageView;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.sip.shortnews.R;
@@ -116,31 +108,7 @@ public class CardAdapter extends PagerAdapter {
                 llSliderParent.setVisibility(View.GONE);
                 final Uri uri = Uri.parse(links[0]);
 
-                final BitmapRequestBuilder<Uri, GlideDrawable> thumbRequest = Glide
-                        .with(mContext)
-                        .load(uri)
-                        .asBitmap() // force first frame for Gif
-                        .transcode(new BitmapToGlideDrawableTranscoder(mContext), GlideDrawable.class)
-                        .diskCacheStrategy(DiskCacheStrategy.ALL)
-                        .placeholder(R.drawable.loading)
-                        .error(R.drawable.loading)
-                        .fitCenter();
-                thumbRequest.into(postImage);
 
-                gifPlayButton.setOnClickListener(new View.OnClickListener() { // or any parent of imgFeed
-                    @Override public void onClick(View v) {
-                        gifPlayButton.setVisibility(View.INVISIBLE);
-                        Glide
-                                .with(mContext)
-                                .load(uri) // load as usual (Gif as animated, other formats as Bitmap)
-                                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-                                .placeholder(R.drawable.youtube_logo)
-                                .error(R.drawable.loading)
-                                .thumbnail(thumbRequest)
-                                .dontAnimate()
-                                .into(postImage);
-                    }
-                });
 
             break;
 

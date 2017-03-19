@@ -1,39 +1,35 @@
 {
   "project_info": {
-    "project_number": "210957811784",
-    "firebase_url": "https://vnshortnews-35374.firebaseio.com",
-    "project_id": "vnshortnews-35374",
-    "storage_bucket": "vnshortnews-35374.appspot.com"
+    "project_number": "567836498653",
+    "project_id": "firebase-shortnews"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:210957811784:android:f6d10f839e20db34",
+        "mobilesdk_app_id": "1:567836498653:android:f6d10f839e20db34",
         "android_client_info": {
           "package_name": "com.sip.shortnews"
         }
       },
-      "oauth_client": [
-        {
-          "client_id": "210957811784-crfhcs16spfsokirkm72djbfpugcibr2.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
+      "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyCL8A6YbyUdhYVquro-PefeYgIRiLRXxD8"
+          "current_key": "AIzaSyDnKUEjJAO7kkSUagUmsWG1PsSAGw5s0Ac"
         }
       ],
       "services": {
         "analytics_service": {
-          "status": 1
+          "status": 2,
+          "analytics_property": {
+            "tracking_id": "UA-93681328-1"
+          }
         },
         "appinvite_service": {
           "status": 1,
           "other_platform_oauth_client": []
         },
         "ads_service": {
-          "status": 2
+          "status": 1
         }
       }
     }

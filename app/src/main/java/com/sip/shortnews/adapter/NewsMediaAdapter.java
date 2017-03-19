@@ -1,13 +1,10 @@
 package com.sip.shortnews.adapter;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
-import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,21 +12,13 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.bumptech.glide.BitmapRequestBuilder;
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.load.resource.drawable.GlideDrawable;
-import com.bumptech.glide.load.resource.transcode.BitmapToGlideDrawableTranscoder;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 import com.sip.shortnews.R;
-import com.sip.shortnews.model.CardViewItem;
-import com.sip.shortnews.model.NewsHomeHeader;
+import com.sip.shortnews.model.HeaderModel;
 import com.sip.shortnews.model.NewsHomeItem;
-import com.sip.shortnews.model.NewsHomeSection;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -37,16 +26,18 @@ import java.util.List;
  */
 public class NewsMediaAdapter<V> extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
 
+
+
     private List<NewsHomeItem> mCardViewItem ;
 
-    private NewsHomeHeader mNewsHomeHeader;
+    private HeaderModel mHeaderModel;
     private  IFItemClick mListener;
     private DisplayImageOptions mDisplayOption;
     private Context mContext;
     private int TYPE_HEADER = 0;
     private  int TYPE_ITEM = 1;
-    public NewsMediaAdapter(Context context, NewsHomeHeader newsHomeHeader,List<NewsHomeItem> newHomeList, IFItemClick listener){
-        this.mNewsHomeHeader = newsHomeHeader;
+    public NewsMediaAdapter(Context context, HeaderModel headerModel, List<NewsHomeItem> newHomeList, IFItemClick listener){
+        this.mHeaderModel = headerModel;
         mCardViewItem = newHomeList;
         mListener = listener;
         mContext = context;
@@ -76,18 +67,19 @@ public class NewsMediaAdapter<V> extends RecyclerView.Adapter<RecyclerView.ViewH
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+
+        //Log.e("position","position "+position);
         if (holder instanceof MyViewHolderHeader){
             MyViewHolderHeader myViewHolderHeader = (MyViewHolderHeader)holder;
-            if (mNewsHomeHeader != null)
-                myViewHolderHeader.pushData(mContext,mNewsHomeHeader);
+            if (mHeaderModel != null)
+                myViewHolderHeader.pushData(mContext, mHeaderModel);
         }
         if (holder instanceof MyViewHolderItem){
-            NewsHomeItem cardViewItem = mCardViewItem.get(position - 1);
+            NewsHomeItem cardViewItem = mCardViewItem.get(position-1);
             MyViewHolderItem myViewHolder = (MyViewHolderItem)holder;
             myViewHolder.pushData(mContext,cardViewItem,mListener,mDisplayOption);
+
         }
-
-
     }
 
     @Override
@@ -100,15 +92,22 @@ public class NewsMediaAdapter<V> extends RecyclerView.Adapter<RecyclerView.ViewH
     @Override
     public int getItemCount() {
         if(mCardViewItem!=null)
-            return mCardViewItem.size()+1;
+            return mCardViewItem.size() + 1;
         return 0;
     }
-    public NewsHomeHeader getmNewsHomeHeader() {
-        return mNewsHomeHeader;
+    public HeaderModel getmHeaderModel() {
+        return mHeaderModel;
     }
 
-    public void setmNewsHomeHeader(NewsHomeHeader mNewsHomeHeader) {
-        this.mNewsHomeHeader = mNewsHomeHeader;
+    public void setmHeaderModel(HeaderModel mHeaderModel) {
+        this.mHeaderModel = mHeaderModel;
+    }
+    public List<NewsHomeItem> getmCardViewItem() {
+        return mCardViewItem;
+    }
+
+    public void setmCardViewItem(List<NewsHomeItem> mCardViewItem) {
+        this.mCardViewItem = mCardViewItem;
     }
     public static class MyViewHolderHeader extends RecyclerView.ViewHolder {
 
@@ -122,7 +121,7 @@ public class NewsMediaAdapter<V> extends RecyclerView.Adapter<RecyclerView.ViewH
             mSessionLogo = (ImageView)itemView.findViewById(R.id.session_logo);
             mSessionEventLabel = (TextView)itemView.findViewById(R.id.session_event);
         }
-        public void pushData(Context context , NewsHomeHeader newsHomeSection){
+        public void pushData(Context context , HeaderModel newsHomeSection){
             mSessionLabel.setText(newsHomeSection.getWelcome_message());
             mSessionEventLabel.setText(newsHomeSection.getEvent_message());
             MyViewHolderItem.playImage(newsHomeSection.getAvatar(),mSessionLogo);
@@ -175,6 +174,9 @@ public class NewsMediaAdapter<V> extends RecyclerView.Adapter<RecyclerView.ViewH
                     mVideoTag.setVisibility(View.VISIBLE);
                     mPlayImage.setVisibility(View.VISIBLE);
                     mPlayImage.setOnClickListener(this);
+                }else{
+                    mVideoTag.setVisibility(View.GONE);
+                    mPlayImage.setVisibility(View.GONE);
                 }
                 mPostTitle.setTextColor(Color.parseColor(cardViewItem.getTitle_color().trim()));
                 mPostTitle.setText(cardViewItem.getPost_title());
@@ -191,25 +193,7 @@ public class NewsMediaAdapter<V> extends RecyclerView.Adapter<RecyclerView.ViewH
             }
         }
         public static void playImage( String url, ImageView postImage){
-            DisplayImageOptions options = new DisplayImageOptions.Builder()
-                    .showImageOnLoading(R.drawable.loading)
-                    .showImageForEmptyUri(R.drawable.loading)
-                    .showImageOnFail(R.drawable.loading)
-                    .cacheInMemory(true)
-                    .cacheOnDisk(true)
-                    .considerExifParams(true)
-                    .bitmapConfig(Bitmap.Config.RGB_565)
-                    .build();
-
-            ImageLoader.getInstance().displayImage(url,postImage,options);
-            //final Uri uri = Uri.parse(url);
-//            Glide
-//                    .with(context)
-//                    .load(uri) // load as usual (Gif as animated, other formats as Bitmap)
-//                    .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-//                    .placeholder(R.drawable.loading)
-//                    .error(R.drawable.loading)
-//                    .into(postImage);
+            ImageLoader.getInstance().displayImage(url,postImage);
         }
     }
     public interface IFItemClick{

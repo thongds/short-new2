@@ -29,6 +29,25 @@ public class SocialMediaItem {
     private String social_logo;
     private String color_tag;
     private String video_tag;
+    private int is_ads;
+    private String ads_code;
+
+    public int getIs_ads() {
+        return is_ads;
+    }
+
+    public void setIs_ads(int is_ads) {
+        this.is_ads = is_ads;
+    }
+
+    public String getAds_code() {
+        return ads_code;
+    }
+
+    public void setAds_code(String ads_code) {
+        this.ads_code = ads_code;
+    }
+
 
     public String getTitle() {
         return title;

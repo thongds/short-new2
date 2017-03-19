@@ -3,15 +3,16 @@ package com.sip.shortnews.model;
 import java.util.List;
 
 /**
- * Created by ssd on 3/15/17.
+ * Created by ssd on 3/18/17.
  */
-public class NewsHomeSection {
+public class SocialMediaSection {
+
 
     private HeaderModel message;
 
-    private List<NewsHomeItem> data;
+    private List<SocialMediaItem> data;
 
-    public HeaderModel getNewsHomeHeader() {
+    public HeaderModel getMessage() {
         return message;
     }
 
@@ -19,12 +20,13 @@ public class NewsHomeSection {
         this.message = message;
     }
 
-    public List<NewsHomeItem> getData() {
+    public List<SocialMediaItem> getData() {
         return data;
     }
 
-    public void setData(List<NewsHomeItem> data) {
+    public void setData(List<SocialMediaItem> data) {
         this.data = data;
     }
+
 
 }

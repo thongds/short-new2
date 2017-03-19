@@ -5,7 +5,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,7 +14,7 @@ import com.sip.shortnews.MainActivity;
 import com.sip.shortnews.R;
 import com.sip.shortnews.adapter.NewsMediaAdapter;
 import com.sip.shortnews.listener.EndlessRecyclerViewScrollListener;
-import com.sip.shortnews.model.NewsHomeHeader;
+import com.sip.shortnews.model.HeaderModel;
 import com.sip.shortnews.model.NewsHomeItem;
 import com.sip.shortnews.model.NewsHomeSection;
 import com.sip.shortnews.service.home_api.HomeMediaService;
@@ -37,7 +36,7 @@ public class NewsFragment extends PFragment {
     private  RecyclerView mRecyclerView;
     private  EndlessRecyclerViewScrollListener mScrollListener ;
     private  List<NewsHomeItem> mList;
-    private NewsHomeHeader mNewsHomeHeader;
+    private HeaderModel mHeaderModel;
     private NewsMediaAdapter mNewsMediaAdapter;
     private int mPage = 0;
     @Nullable
@@ -49,9 +48,8 @@ public class NewsFragment extends PFragment {
         mainActivity = (MainActivity)getActivity();
         mRecyclerView.setLayoutManager(mLayoutManager);
         mList = new ArrayList<>();
-        mNewsMediaAdapter = new NewsMediaAdapter(mainActivity,mNewsHomeHeader,mList,ifItemClick);
+        mNewsMediaAdapter = new NewsMediaAdapter(mainActivity, mHeaderModel,mList,ifItemClick);
         mRecyclerView.setAdapter(mNewsMediaAdapter);
-
         mScrollListener = new EndlessRecyclerViewScrollListener(mLayoutManager) {
             @Override
             public void onLoadMore(int page, int totalItemsCount) {
@@ -85,8 +83,9 @@ public class NewsFragment extends PFragment {
                     if(response.body().getData().size() >0){
                         mList.addAll(response.body().getData());
                         if (page == 0){
-                            mNewsHomeHeader = response.body().getNewsHomeHeader();
-                            mNewsMediaAdapter.setmNewsHomeHeader(mNewsHomeHeader);
+                            mHeaderModel = response.body().getNewsHomeHeader();
+                            mNewsMediaAdapter.setmHeaderModel(mHeaderModel);
+                            mNewsMediaAdapter.setmCardViewItem(mList);
                         }
                         mNewsMediaAdapter.notifyDataSetChanged();
 

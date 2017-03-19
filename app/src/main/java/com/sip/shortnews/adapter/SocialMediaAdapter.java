@@ -6,26 +6,13 @@ import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.WebSettings;
-import android.webkit.WebView;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.bumptech.glide.BitmapRequestBuilder;
-import com.bumptech.glide.GenericRequestBuilder;
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.RequestManager;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.load.resource.drawable.GlideDrawable;
-import com.bumptech.glide.load.resource.gif.GifDrawable;
-import com.bumptech.glide.load.resource.transcode.BitmapToGlideDrawableTranscoder;
-import com.bumptech.glide.request.RequestListener;
-import com.bumptech.glide.request.target.Target;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.interfaces.DraweeController;
 import com.facebook.drawee.view.SimpleDraweeView;
@@ -33,45 +20,86 @@ import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 import com.sip.shortnews.R;
-import com.sip.shortnews.model.CardViewItem;
+import com.sip.shortnews.model.HeaderModel;
 import com.sip.shortnews.model.SocialMediaItem;
-import  com.sip.shortnews.listener.IGifLoadFinish;
+
 import java.util.List;
 
 /**
  * Created by ssd on 8/20/16.
  */
-public class SocialMediaAdapter extends RecyclerView.Adapter<SocialMediaAdapter.VH> {
+public class SocialMediaAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     public static List<SocialMediaItem> socialMediaItemList;
     private VH.DetailClickListener mDetailClickListener;
+
+
+    private HeaderModel mHeaderModel;
     private DisplayImageOptions mDisplayOption;
     private Context mContext;
+    private int TYPE_HEADER = 0;
+    private  int TYPE_ITEM = 1;
+
     public SocialMediaAdapter(Context context,List<SocialMediaItem> socialMediaItems, VH.DetailClickListener detailClickListener){
         socialMediaItemList = socialMediaItems;
         mDetailClickListener = detailClickListener;
         mContext = context;
     }
     @Override
-    public VH onCreateViewHolder(ViewGroup parent, int viewType) {
+    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.social_media_item,parent,false);
-        Drawable drawable = parent.getContext().getResources().getDrawable(R.drawable.loading);
-        mDisplayOption =  new DisplayImageOptions.Builder().cacheInMemory(true).cacheOnDisk(true)
-                .showImageOnLoading(drawable).imageScaleType(ImageScaleType.EXACTLY).build();
-        return new VH(v,mDetailClickListener);
+        if(viewType == TYPE_ITEM){
+            View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.social_media_item,parent,false);
+            Drawable drawable = parent.getContext().getResources().getDrawable(R.drawable.loading);
+            mDisplayOption =  new DisplayImageOptions.Builder().cacheInMemory(true).cacheOnDisk(true)
+                    .showImageOnLoading(drawable).imageScaleType(ImageScaleType.EXACTLY).build();
+            return new VH(v,mDetailClickListener);
+        }
+        if(viewType == TYPE_HEADER){
+            View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.new_media_view_header,parent,false);
+            NewsMediaAdapter.MyViewHolderHeader ViewHolder = new NewsMediaAdapter.MyViewHolderHeader(v);
+            Drawable drawable = parent.getContext().getResources().getDrawable(R.drawable.loading);
+            mDisplayOption =  new DisplayImageOptions.Builder().cacheInMemory(true).cacheOnDisk(true)
+                    .showImageOnLoading(drawable).imageScaleType(ImageScaleType.IN_SAMPLE_INT).build();
+            return ViewHolder;
+        }
+        throw new RuntimeException("can't find Type");
     }
 
     @Override
-    public void onBindViewHolder(VH holder, int position) {
-        holder.pushData(mContext,socialMediaItemList.get(position),position,mDisplayOption);
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+        if (holder instanceof NewsMediaAdapter.MyViewHolderHeader){
+            NewsMediaAdapter.MyViewHolderHeader myViewHolderHeader = (NewsMediaAdapter.MyViewHolderHeader)holder;
+            if (mHeaderModel != null)
+                myViewHolderHeader.pushData(mContext, mHeaderModel);
+        }
+        if(holder instanceof VH){
+            VH vh = (VH)holder;
+            vh.pushData(mContext,socialMediaItemList.get(position-1),position-1,mDisplayOption);
+        }
+
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        if(position == 0)
+            return TYPE_HEADER;
+        return  TYPE_ITEM;
     }
 
     @Override
     public int getItemCount() {
         if(socialMediaItemList!=null)
-            return socialMediaItemList.size();
+            return socialMediaItemList.size() + 1;
         return 0;
     }
+    public HeaderModel getmHeaderModel() {
+        return mHeaderModel;
+    }
+
+    public void setmHeaderModel(HeaderModel mHeaderModel) {
+        this.mHeaderModel = mHeaderModel;
+    }
+
 
     public static class VH extends RecyclerView.ViewHolder implements View.OnClickListener {
         ImageView mPageLogo;
@@ -85,7 +113,6 @@ public class SocialMediaAdapter extends RecyclerView.Adapter<SocialMediaAdapter.
         ImageView mYoutubePlay;
         ImageView mGifPlay;
         SimpleDraweeView facebookLoadImage;
-        IGifLoadFinish mGifInterface;
         int mClickPosition;
 
         DetailClickListener mDetailClickListener;
@@ -119,18 +146,7 @@ public class SocialMediaAdapter extends RecyclerView.Adapter<SocialMediaAdapter.
             mClickPosition = clickPosition;
             mPostImage.setVisibility(View.VISIBLE);
             facebookLoadImage.setVisibility(View.INVISIBLE);
-            mGifInterface = new IGifLoadFinish() {
-                @Override
-                public void onLoadFinish(final GlideDrawable resource) {
-                   mGifPlay.setOnClickListener(new View.OnClickListener() {
-                       @Override
-                       public void onClick(View view) {
-                           resource.start();
-                           mGifPlay.setVisibility(View.INVISIBLE);
-                       }
-                   });
-                }
-            };
+
             switch (socialMediaItem.getSocial_content_type_id()){
 
                 case 0://video
@@ -140,16 +156,9 @@ public class SocialMediaAdapter extends RecyclerView.Adapter<SocialMediaAdapter.
                         playImage(context,post_image[1],mPostImage);
                     mVideoTag.setVisibility(View.VISIBLE);
                     mGifPlay.setVisibility(View.INVISIBLE);
-                    if(socialMediaItem.getSocial_name().equals("youtube")) {
-                        mYoutubePlay.setVisibility(View.VISIBLE);
-                        mPlayImage.setVisibility(View.INVISIBLE);
-                    }
-                    else {
-                        mYoutubePlay.setVisibility(View.INVISIBLE);
-                        mPlayImage.setVisibility(View.VISIBLE);
-                    }
+                    mYoutubePlay.setVisibility(View.INVISIBLE);
+                    mPlayImage.setVisibility(View.VISIBLE);
                     break;
-
                 case 1://image
                     mYoutubePlay.setVisibility(View.INVISIBLE);
                     mPlayImage.setVisibility(View.INVISIBLE);
@@ -164,41 +173,26 @@ public class SocialMediaAdapter extends RecyclerView.Adapter<SocialMediaAdapter.
                     mYoutubePlay.setVisibility(View.INVISIBLE);
                     mPlayImage.setVisibility(View.INVISIBLE);
                     mVideoTag.setVisibility(View.INVISIBLE);
-
+                    facebookLoadImage.setVisibility(View.VISIBLE);
                    mGifPlay.setVisibility(View.VISIBLE);
 //                    Glide.with(context).load(post_image[0]).diskCacheStrategy(DiskCacheStrategy.SOURCE).into(mPostImage);
 
                     final Uri uri = Uri.parse(post_image[0]);
 
-//                    DraweeController controller = Fresco.newDraweeControllerBuilder()
-//                            .setUri(uri)
-//                            .setAutoPlayAnimations(true)
-//                            .build();
-//                    //Set the DraweeView controller, and you should be good to go.
-//                    facebookLoadImage.setController(controller);
+                    DraweeController controller = Fresco.newDraweeControllerBuilder()
+                            .setUri(uri)
+                            .setAutoPlayAnimations(true)
+                            .build();
+                    //Set the DraweeView controller, and you should be good to go.
+                    facebookLoadImage.setController(controller);
 
 
-                    final BitmapRequestBuilder<Uri, GlideDrawable> thumbRequest = Glide
-                            .with(context)
-                            .load(uri)
-                            .asBitmap() // force first frame for Gif
-                            .transcode(new BitmapToGlideDrawableTranscoder(context), GlideDrawable.class)
-                            .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-                            .centerCrop();
-                    thumbRequest.into(mPostImage);
-
-
-                    mGifPlay.setOnClickListener(new View.OnClickListener() { // or any parent of imgFeed
-                        @Override public void onClick(View v) {
-
-                                    Glide
-                                    .with(context)
-                                    .load(uri).asGif()
-                                    .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-                                    .into(mPostImage);
-                            mGifPlay.setVisibility(View.INVISIBLE);
-                        }
-                    });
+                    break;
+                case 3 :// youtube
+                    mYoutubePlay.setVisibility(View.VISIBLE);
+                    mPlayImage.setVisibility(View.INVISIBLE);
+                    if(post_image!=null &&post_image.length>0)
+                        playImage(context,post_image[1],mPostImage);
                     break;
             }
             mPostTitle.setText(socialMediaItem.getTitle());
@@ -212,28 +206,11 @@ public class SocialMediaAdapter extends RecyclerView.Adapter<SocialMediaAdapter.
              void showDetail(int position,List<SocialMediaItem> data);
         }
         void playImage(Context context,String url, ImageView postImage){
+            ImageLoader.getInstance().displayImage(url,postImage);
 //            ImageLoader.getInstance().displayImage(url,postImage);
-            final Uri uri = Uri.parse(url);
-            postImage.setImageURI(uri);
-            final BitmapRequestBuilder<Uri, GlideDrawable> thumbRequest = Glide
-                    .with(context)
-                    .load(uri)
-                    .asBitmap() // force first frame for Gif
-                    .transcode(new BitmapToGlideDrawableTranscoder(context), GlideDrawable.class)
-                    .diskCacheStrategy(DiskCacheStrategy.ALL)
-                    .placeholder(R.drawable.loading)
-                    .error(R.drawable.loading)
-                    .centerCrop();
-            thumbRequest.into(postImage);
+//            final Uri uri = Uri.parse(url);
+//            postImage.setImageURI(uri);
 
-            Glide
-                    .with(context)
-                    .load(uri) // load as usual (Gif as animated, other formats as Bitmap)
-                    .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-                    .placeholder(R.drawable.loading)
-                    .error(R.drawable.loading).centerCrop()
-                    .thumbnail(thumbRequest)
-                    .into(postImage);
         }
     }
 }
