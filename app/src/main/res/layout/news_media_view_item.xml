@@ -1,10 +1,9 @@
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_height="wrap_content"
     android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="horizontal"
-    android:layout_marginTop="10dp"
-    >
+    android:layout_marginTop="10dp">
     <RelativeLayout
         android:id="@+id/content"
         android:layout_width="match_parent"
@@ -99,15 +98,19 @@
             </LinearLayout>
             </ScrollView>
         </RelativeLayout>
-        <ImageView
-            android:visibility="invisible"
-            android:id="@+id/video_tag"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/video_tag"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentTop="true"
-            />
+            <com.joooonho.SelectableRoundedImageView
+                android:visibility="visible"
+                android:id="@+id/video_tag"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:sriv_right_top_corner_radius="9dip"
+                android:scaleType="centerCrop"
+                android:src="@drawable/video_tag_tuoi_tre"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentRight="true"
+
+                />
+
     </RelativeLayout>
     <ImageView
         android:id="@+id/ads"
@@ -116,6 +119,5 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:src="@drawable/loading"
-        android:maxHeight="400dp"
         />
 </LinearLayout>

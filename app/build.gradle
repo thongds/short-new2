@@ -36,5 +36,6 @@ dependencies {
     compile 'com.facebook.fresco:animated-gif:0.14.0'
     compile 'com.google.android.gms:play-services-analytics:10.0.1'
     compile 'com.github.xiprox.errorview:library:2.+'
+    compile 'com.joooonho:selectableroundedimageview:1.0.1'
 }
 apply plugin: 'com.google.gms.google-services'

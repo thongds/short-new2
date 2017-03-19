@@ -1,6 +1,7 @@
 package com.sip.shortnews.adapter;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
@@ -12,9 +13,12 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.joooonho.SelectableRoundedImageView;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.ImageScaleType;
+import com.nostra13.universalimageloader.core.display.RoundedBitmapDisplayer;
+import com.nostra13.universalimageloader.core.display.SimpleBitmapDisplayer;
 import com.sip.shortnews.R;
 import com.sip.shortnews.model.HeaderModel;
 import com.sip.shortnews.model.NewsHomeItem;
@@ -132,7 +136,7 @@ public class NewsMediaAdapter<V> extends RecyclerView.Adapter<RecyclerView.ViewH
     public static class  MyViewHolderItem extends RecyclerView.ViewHolder implements View.OnClickListener{
         ImageView mPageLogo;
         ImageView mPostImage;
-        ImageView mVideoTag;
+        SelectableRoundedImageView mVideoTag;
         RelativeLayout mTagPost;
         TextView mPostTitle;
         TextView mPostContent;
@@ -148,7 +152,7 @@ public class NewsMediaAdapter<V> extends RecyclerView.Adapter<RecyclerView.ViewH
             mPageLogo = (ImageView)v.findViewById(R.id.paper_logo);
             mPostImage = (ImageView)v.findViewById(R.id.post_image);
             mTagPost = (RelativeLayout)v.findViewById(R.id.paper_corner_left);
-            mVideoTag = (ImageView)v.findViewById(R.id.video_tag);
+            mVideoTag = (SelectableRoundedImageView)v.findViewById(R.id.video_tag);
             mPostTitle = (TextView)v.findViewById(R.id.post_title);
             mPostContent = (TextView)v.findViewById(R.id.post_content);
             mPlayImage = (ImageView)v.findViewById(R.id.play_image);
@@ -170,7 +174,18 @@ public class NewsMediaAdapter<V> extends RecyclerView.Adapter<RecyclerView.ViewH
                 playImage(cardViewItem.getPaper_logo(),mPageLogo);
                 playImage(cardViewItem.getPost_image(),mPostImage);
                 if(cardViewItem.getIs_video() == 1){
-                    ImageLoader.getInstance().displayImage(cardViewItem.getVideo_tag_image(),mVideoTag);
+                    DisplayImageOptions options = new DisplayImageOptions.Builder()
+                            .showImageOnLoading(R.drawable.loading)
+                            .showImageForEmptyUri(R.drawable.loading)
+                            .showImageOnFail(R.drawable.loading)
+                            .imageScaleType(ImageScaleType.NONE)
+                            .cacheInMemory(true)
+                            .cacheOnDisk(true)
+                            .considerExifParams(true)
+                            .bitmapConfig(Bitmap.Config.RGB_565)
+                            .displayer(new SimpleBitmapDisplayer())
+                            .build();
+                    ImageLoader.getInstance().displayImage(cardViewItem.getVideo_tag_image(),mVideoTag,options);
                     mVideoTag.setVisibility(View.VISIBLE);
                     mPlayImage.setVisibility(View.VISIBLE);
                     mPlayImage.setOnClickListener(this);
