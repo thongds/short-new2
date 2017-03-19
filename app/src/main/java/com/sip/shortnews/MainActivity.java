@@ -74,21 +74,21 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         mStackTitle = new Stack<>();
         setContentView(R.layout.main_activity);
         generateMenu();
-        mNavigateMenu = (ImageView)findViewById(R.id.navigate);
+        //mNavigateMenu = (ImageView)findViewById(R.id.navigate);
         mSlidingTabLayout = (SlidingTabLayout)findViewById(R.id.sliding_tabs);
         mViewPager = (ViewPager)findViewById(R.id.view_page);
         mTitlel = (TextView)findViewById(R.id.header_title);
         mFragmentManager = getSupportFragmentManager();
-        ImageView menu = (ImageView)findViewById(R.id.navigate);
-        TextView textView = (TextView)findViewById(R.id.day_left);
+        //ImageView menu = (ImageView)findViewById(R.id.navigate);
+        //TextView textView = (TextView)findViewById(R.id.day_left);
         mLoadProgress = (RelativeLayout)findViewById(R.id.load_progress);
         mErrorView = (ErrorView)findViewById(R.id.error_view);
         mDilatingDotsProgressBar = (DilatingDotsProgressBar) findViewById(R.id.progress);
         mMainActivity = this;
         mLoadProgress.setVisibility(View.VISIBLE);
-        Typeface typeface = Typeface.createFromAsset(getAssets(),"fonts/brush.ttf");
-        textView.setTypeface(typeface);
-        menu.setOnClickListener(this);
+        //Typeface typeface = Typeface.createFromAsset(getAssets(),"fonts/brush.ttf");
+        //textView.setTypeface(typeface);
+        //menu.setOnClickListener(this);
         mSlidingTabLayout.setOnclickMenu(this);
         loadFragment();
         mErrorView.setOnRetryListener(new ErrorView.RetryListener() {
@@ -175,17 +175,17 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         }
     }
     public void changeNavigateMenu(boolean showBackMenu){
-        DrawerLayout drawerLayout = (DrawerLayout)findViewById(R.id.drawer_layout);
-
-        mNavigateMenu.setImageResource(R.drawable.back_menu);
-        drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
-        if(showBackMenu){
-            mNavigateMenu.setImageResource(R.drawable.back_menu);
-            drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
-        }else{
-            mNavigateMenu.setImageResource(R.drawable.menu);
-            drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
-        }
+//        DrawerLayout drawerLayout = (DrawerLayout)findViewById(R.id.drawer_layout);
+//
+//        mNavigateMenu.setImageResource(R.drawable.back_menu);
+//        drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+//        if(showBackMenu){
+//            mNavigateMenu.setImageResource(R.drawable.back_menu);
+//            drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+//        }else{
+//            mNavigateMenu.setImageResource(R.drawable.menu);
+//            drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
+//        }
     }
 
     private void popBackStack(){
@@ -214,46 +214,46 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
     }
     @Override
     public void onClick(View v) {
-        DrawerLayout drawerLayout = (DrawerLayout)findViewById(R.id.drawer_layout);
-        switch (v.getId()){
-            case R.id.menu:
-                if(mFragmentManager.getBackStackEntryCount()<2)
-                    drawerLayout.openDrawer(GravityCompat.START);
-
-                else
-                    popBackStack();
-                break;
-
-        }
+//        DrawerLayout drawerLayout = (DrawerLayout)findViewById(R.id.drawer_layout);
+//        switch (v.getId()){
+//            case R.id.menu:
+//                if(mFragmentManager.getBackStackEntryCount()<2)
+//                    drawerLayout.openDrawer(GravityCompat.START);
+//
+//                else
+//                    popBackStack();
+//                break;
+//
+//        }
     }
     public void generateMenu(){
 
 
 
-        ListView listView = (ListView)findViewById(R.id.list_view_menu);
-        ArrayList<MenuItemCustomize> menuItemArrayList = new ArrayList<>();
-        int[] resourceIcon = new int[20];
-        resourceIcon[0] = R.drawable.icon_airplane;
-        resourceIcon[1] = R.drawable.icon_bicycle;
-        resourceIcon[2] = R.drawable.icon_directions;
-        resourceIcon[3] = R.drawable.icon_eiffel_tower;
-        resourceIcon[4] = R.drawable.icon_glasses;
-        resourceIcon[5] = R.drawable.icon_helm;
-        resourceIcon[6] = R.drawable.icon_palm_tree;
-        resourceIcon[7] = R.drawable.icon_home;
-        for(int i=0;i<8;i++){
-            MenuItemCustomize menuItemCustomize = new MenuItemCustomize();
-            if(i==3){
-                menuItemCustomize.setHasNewLesson(true);
-            }
-            if(i == 7){
-                menuItemCustomize.setmMenuTitle("Home");
-            }
-            menuItemCustomize.setmIconResource(resourceIcon[i]);
-            menuItemArrayList.add(menuItemCustomize);
-        }
-        MenuAdapter menuAdapter = new MenuAdapter(this,R.layout.item_menu,menuItemArrayList);
-        listView.setAdapter(menuAdapter);
+//        ListView listView = (ListView)findViewById(R.id.list_view_menu);
+//        ArrayList<MenuItemCustomize> menuItemArrayList = new ArrayList<>();
+//        int[] resourceIcon = new int[20];
+//        resourceIcon[0] = R.drawable.icon_airplane;
+//        resourceIcon[1] = R.drawable.icon_bicycle;
+//        resourceIcon[2] = R.drawable.icon_directions;
+//        resourceIcon[3] = R.drawable.icon_eiffel_tower;
+//        resourceIcon[4] = R.drawable.icon_glasses;
+//        resourceIcon[5] = R.drawable.icon_helm;
+//        resourceIcon[6] = R.drawable.icon_palm_tree;
+//        resourceIcon[7] = R.drawable.icon_home;
+//        for(int i=0;i<8;i++){
+//            MenuItemCustomize menuItemCustomize = new MenuItemCustomize();
+//            if(i==3){
+//                menuItemCustomize.setHasNewLesson(true);
+//            }
+//            if(i == 7){
+//                menuItemCustomize.setmMenuTitle("Home");
+//            }
+//            menuItemCustomize.setmIconResource(resourceIcon[i]);
+//            menuItemArrayList.add(menuItemCustomize);
+//        }
+//        MenuAdapter menuAdapter = new MenuAdapter(this,R.layout.item_menu,menuItemArrayList);
+//        listView.setAdapter(menuAdapter);
     }
 //    private void getFirebaseConfig() {
 //        mFirebaseRemoteConfig = FirebaseRemoteConfig.getInstance();

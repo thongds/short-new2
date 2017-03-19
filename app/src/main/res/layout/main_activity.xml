@@ -37,68 +37,68 @@
             android:layout_weight="1"/>
     </LinearLayout>
 
-    <android.support.design.widget.NavigationView
-        android:visibility="invisible"
-        android:id="@+id/nav_view"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_gravity="start"
-        android:fitsSystemWindows="true"
-        android:background="@drawable/background"
-        >
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp">
-            <RelativeLayout
-                android:id="@+id/header"
-                android:layout_width="match_parent"
-                android:layout_height="202dp">
+    <!--<android.support.design.widget.NavigationView-->
+        <!--android:visibility="invisible"-->
+        <!--android:id="@+id/nav_view"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:layout_gravity="start"-->
+        <!--android:fitsSystemWindows="true"-->
+        <!--android:background="@drawable/background"-->
+        <!--&gt;-->
+        <!--<RelativeLayout-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:layout_marginLeft="10dp"-->
+            <!--android:layout_marginRight="10dp">-->
+            <!--<RelativeLayout-->
+                <!--android:id="@+id/header"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="202dp">-->
 
-                <com.mikhaellopez.circularimageview.CircularImageView
-                    android:id="@+id/avatar_user"
-                    android:layout_marginTop="10dp"
-                    android:layout_centerHorizontal="true"
-                    android:layout_width="100dp"
-                    android:layout_height="100dp"
-                    android:src="@drawable/dualeo_avatar"
-                    app:civ_border_width="0dp"
-                    app:civ_shadow="false"/>
+                <!--<com.mikhaellopez.circularimageview.CircularImageView-->
+                    <!--android:id="@+id/avatar_user"-->
+                    <!--android:layout_marginTop="10dp"-->
+                    <!--android:layout_centerHorizontal="true"-->
+                    <!--android:layout_width="100dp"-->
+                    <!--android:layout_height="100dp"-->
+                    <!--android:src="@drawable/dualeo_avatar"-->
+                    <!--app:civ_border_width="0dp"-->
+                    <!--app:civ_shadow="false"/>-->
 
-                <LinearLayout
-                    android:layout_below="@id/avatar_user"
-                    android:layout_alignLeft="@id/avatar_user"
-                    android:orientation="horizontal"
-                    android:gravity="center_horizontal"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content">
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Yamada"
-                        android:textColor="@color/colorWhite"
-                        android:textSize="24dp"/>
-                    <TextView
-                        android:visibility="gone"
-                        android:id="@+id/day_left"
-                        android:layout_marginLeft="10dp"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textColor="@color/colorRed"
-                        android:text="365 day"
-                        android:textSize="24dp"/>
-                </LinearLayout>
-            </RelativeLayout>
-            <ListView
-                android:id="@+id/list_view_menu"
-                android:layout_below="@id/header"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                <!--<LinearLayout-->
+                    <!--android:layout_below="@id/avatar_user"-->
+                    <!--android:layout_alignLeft="@id/avatar_user"-->
+                    <!--android:orientation="horizontal"-->
+                    <!--android:gravity="center_horizontal"-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_height="wrap_content">-->
+                    <!--<TextView-->
+                        <!--android:layout_width="wrap_content"-->
+                        <!--android:layout_height="wrap_content"-->
+                        <!--android:text="Yamada"-->
+                        <!--android:textColor="@color/colorWhite"-->
+                        <!--android:textSize="24dp"/>-->
+                    <!--<TextView-->
+                        <!--android:visibility="gone"-->
+                        <!--android:id="@+id/day_left"-->
+                        <!--android:layout_marginLeft="10dp"-->
+                        <!--android:layout_width="wrap_content"-->
+                        <!--android:layout_height="wrap_content"-->
+                        <!--android:textColor="@color/colorRed"-->
+                        <!--android:text="365 day"-->
+                        <!--android:textSize="24dp"/>-->
+                <!--</LinearLayout>-->
+            <!--</RelativeLayout>-->
+            <!--<ListView-->
+                <!--android:id="@+id/list_view_menu"-->
+                <!--android:layout_below="@id/header"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="match_parent">-->
 
-            </ListView>
-        </RelativeLayout>
-    </android.support.design.widget.NavigationView>
+            <!--</ListView>-->
+        <!--</RelativeLayout>-->
+    <!--</android.support.design.widget.NavigationView>-->
 </android.support.v4.widget.DrawerLayout>
 <RelativeLayout
     android:id="@+id/holder_content"

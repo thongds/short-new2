@@ -6,15 +6,15 @@
     android:layout_weight="1"
     android:layout_height="50dp"
     android:background="#0C404F">
-    <ImageView
-        android:id="@+id/menu"
-        android:clickable="true"
-        android:layout_alignParentLeft="true"
-        android:layout_centerVertical="true"
-        android:layout_marginLeft="10dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/menu"/>
+    <!--<ImageView-->
+        <!--android:id="@+id/menu"-->
+        <!--android:clickable="true"-->
+        <!--android:layout_alignParentLeft="true"-->
+        <!--android:layout_centerVertical="true"-->
+        <!--android:layout_marginLeft="10dp"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:src="@drawable/menu"/>-->
 <TextView
     android:layout_centerInParent="true"
     android:id="@+id/title_tab_text"

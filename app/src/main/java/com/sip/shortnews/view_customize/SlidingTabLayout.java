@@ -83,7 +83,6 @@ public class SlidingTabLayout extends HorizontalScrollView {
     private RelativeLayout mLnTabLeft;
     private RelativeLayout mLnTabRight;
     private ViewPager mViewPager;
-    private ImageView mMenu;
     private OnClickListener mOnclickMenuListener;
     private ViewPager.OnPageChangeListener mViewPagerPageChangeListener;
 
@@ -222,10 +221,7 @@ public class SlidingTabLayout extends HorizontalScrollView {
                 tabView = LayoutInflater.from(getContext()).inflate(R.layout.custom_tab_view, mTabStrip,
                         false);
                 tabTitleView = (TextView) tabView.findViewById(textId);
-                mMenu = (ImageView)tabView.findViewById(R.id.menu);
-                if(mOnclickMenuListener !=null){
-                    mMenu.setOnClickListener(mOnclickMenuListener);
-                }
+
                 mLnTabLeft = (RelativeLayout) tabView.findViewById(R.id.tab_child);
                 mLnTabLeft.setBackgroundColor(Color.parseColor("#377B8F"));
             }

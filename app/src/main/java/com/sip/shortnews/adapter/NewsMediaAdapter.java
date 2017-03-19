@@ -147,7 +147,7 @@ public class NewsMediaAdapter<V> extends RecyclerView.Adapter<RecyclerView.ViewH
             super(v);
             mPageLogo = (ImageView)v.findViewById(R.id.paper_logo);
             mPostImage = (ImageView)v.findViewById(R.id.post_image);
-            mTagPost = (RelativeLayout)v.findViewById(R.id.corner_left);
+            mTagPost = (RelativeLayout)v.findViewById(R.id.paper_corner_left);
             mVideoTag = (ImageView)v.findViewById(R.id.video_tag);
             mPostTitle = (TextView)v.findViewById(R.id.post_title);
             mPostContent = (TextView)v.findViewById(R.id.post_content);

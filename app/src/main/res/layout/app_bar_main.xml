@@ -49,15 +49,15 @@
                 android:text="Mạng Xã Hội"/>
         </LinearLayout>
         </LinearLayout>
-        <ImageView
-            android:id="@+id/navigate"
-            android:layout_centerVertical="true"
-            android:layout_alignParentLeft="true"
-            android:layout_width="30dp"
-            android:layout_height="20dp"
-            android:src="@drawable/menu"
-            android:layout_marginLeft="16dp"
-            />
+        <!--<ImageView-->
+            <!--android:id="@+id/navigate"-->
+            <!--android:layout_centerVertical="true"-->
+            <!--android:layout_alignParentLeft="true"-->
+            <!--android:layout_width="30dp"-->
+            <!--android:layout_height="20dp"-->
+            <!--android:src="@drawable/menu"-->
+            <!--android:layout_marginLeft="16dp"-->
+            <!--/>-->
 
     </RelativeLayout>
     <RelativeLayout
