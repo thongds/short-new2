@@ -132,5 +132,43 @@
             app:dd_animationDuration="500"
             app:dd_horizontalSpacing="4dp"
             />
+        <RelativeLayout
+            android:id="@+id/rl_update"
+            android:visibility="invisible"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true">
+        <ImageView
+            android:id="@+id/sad_update_image"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:src="@drawable/sad_update"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            />
+        <TextView
+            android:id="@+id/update_message"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/colorWhite"
+            android:textAlignment="center"
+            android:text="version not support now!"
+            android:layout_below="@+id/sad_update_image"
+            android:layout_marginTop="20dp"/>
+        <Button
+            android:id="@+id/update_link"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Cập Nhật Ngay!"
+            android:textColor="@color/colorRed"
+            android:layout_below="@+id/update_message"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/background_corner_all"
+            android:layout_centerHorizontal="true"
+            android:padding="10dp"
+            android:textAllCaps="true"
+            android:textAlignment="center"
+            />
+        </RelativeLayout>
     </RelativeLayout>
 </RelativeLayout>

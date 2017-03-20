@@ -2,7 +2,9 @@ package com.sip.shortnews;
 
 import android.app.ActionBar;
 import android.app.Application;
+import android.content.Intent;
 import android.graphics.Typeface;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -62,11 +64,15 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
     private TextView mTitlel;
     private Stack<String> mStackTitle;
     private RelativeLayout mLoadProgress;
+    private RelativeLayout mRlUpdate;
+    private TextView mUpdateMessage;
+    private TextView mUpdateLink;
     ViewPager mViewPager;
     SlidingTabLayout mSlidingTabLayout;
     DilatingDotsProgressBar mDilatingDotsProgressBar;
     ErrorView mErrorView;
     private MainActivity mMainActivity;
+    private String mLinkUpdate;
     private Tracker mTracker;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,6 +84,9 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         mSlidingTabLayout = (SlidingTabLayout)findViewById(R.id.sliding_tabs);
         mViewPager = (ViewPager)findViewById(R.id.view_page);
         mTitlel = (TextView)findViewById(R.id.header_title);
+        mRlUpdate = (RelativeLayout)findViewById(R.id.rl_update);
+        mUpdateMessage = (TextView)findViewById(R.id.update_message);
+        mUpdateLink = (TextView)findViewById(R.id.update_link);
         mFragmentManager = getSupportFragmentManager();
         //ImageView menu = (ImageView)findViewById(R.id.navigate);
         //TextView textView = (TextView)findViewById(R.id.day_left);
@@ -90,6 +99,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         //textView.setTypeface(typeface);
         //menu.setOnClickListener(this);
         mSlidingTabLayout.setOnclickMenu(this);
+        mUpdateLink.setOnClickListener(this);
         loadFragment();
         mErrorView.setOnRetryListener(new ErrorView.RetryListener() {
             @Override
@@ -125,6 +135,11 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                         mTracker = application.getDefaultTracker();
                         mTracker.setScreenName("Android MainActivity");
                         mTracker.send(new HitBuilders.ScreenViewBuilder().build());
+                    }else{
+                        mDilatingDotsProgressBar.hide();
+                        mRlUpdate.setVisibility(View.VISIBLE);
+                        mLinkUpdate = supportResponse.getLink_update();
+                        mUpdateMessage.setText(supportResponse.getMessage_update());
                     }
                 }
             }
@@ -215,16 +230,17 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
     @Override
     public void onClick(View v) {
 //        DrawerLayout drawerLayout = (DrawerLayout)findViewById(R.id.drawer_layout);
-//        switch (v.getId()){
-//            case R.id.menu:
-//                if(mFragmentManager.getBackStackEntryCount()<2)
-//                    drawerLayout.openDrawer(GravityCompat.START);
-//
-//                else
-//                    popBackStack();
-//                break;
-//
-//        }
+        switch (v.getId()){
+            case R.id.update_link:
+                final String appPackageName = getPackageName(); // getPackageName() from Context or Activity object
+                try {
+                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + appPackageName)));
+                } catch (android.content.ActivityNotFoundException anfe) {
+                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + appPackageName)));
+                }
+                break;
+
+        }
     }
     public void generateMenu(){
 
