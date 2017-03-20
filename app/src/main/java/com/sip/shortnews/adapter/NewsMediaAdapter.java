@@ -157,18 +157,22 @@ public class NewsMediaAdapter<V> extends RecyclerView.Adapter<RecyclerView.ViewH
             mPostContent = (TextView)v.findViewById(R.id.post_content);
             mPlayImage = (ImageView)v.findViewById(R.id.play_image);
             mImageAds = (ImageView)v.findViewById(R.id.ads);
-            mRlContent =  (RelativeLayout)v.findViewById(R.id.content);
+            mRlContent =  (RelativeLayout)v.findViewById(R.id.centre_content);
         }
         public void pushData(Context context,NewsHomeItem cardViewItem,IFItemClick ifItemClick,DisplayImageOptions displayImageOptions){
             itemClick = ifItemClick;
             mCardViewItem = cardViewItem;
             if(mCardViewItem.getIs_ads() == 1){
-                mRlContent.setVisibility(View.GONE);
+                mRlContent.setVisibility(View.INVISIBLE);
+                mTagPost.setVisibility(View.INVISIBLE);
                 mImageAds.setVisibility(View.VISIBLE);
+                mVideoTag.setVisibility(View.INVISIBLE);
                 playImage(mCardViewItem.getPost_image(),mImageAds);
             }else{
                 mRlContent.setVisibility(View.VISIBLE);
-                mImageAds.setVisibility(View.GONE);
+                mImageAds.setVisibility(View.INVISIBLE);
+                mVideoTag.setVisibility(View.VISIBLE);
+                mTagPost.setVisibility(View.VISIBLE);
                 GradientDrawable gd = (GradientDrawable) mTagPost.getBackground().getCurrent();
                 gd.setColor(Color.parseColor(cardViewItem.getPaper_tag_color().trim()));
                 playImage(cardViewItem.getPaper_logo(),mPageLogo);
@@ -190,8 +194,8 @@ public class NewsMediaAdapter<V> extends RecyclerView.Adapter<RecyclerView.ViewH
                     mPlayImage.setVisibility(View.VISIBLE);
                     mPlayImage.setOnClickListener(this);
                 }else{
-                    mVideoTag.setVisibility(View.GONE);
-                    mPlayImage.setVisibility(View.GONE);
+                    mVideoTag.setVisibility(View.INVISIBLE);
+                    mPlayImage.setVisibility(View.INVISIBLE);
                 }
                 mPostTitle.setTextColor(Color.parseColor(cardViewItem.getTitle_color().trim()));
                 mPostTitle.setText(cardViewItem.getPost_title());

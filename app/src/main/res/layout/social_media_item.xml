@@ -11,6 +11,15 @@
         android:background="@drawable/card_view_background"
         android:id="@+id/rl_content_holder"
         >
+        <ImageView
+            android:id="@+id/ads"
+            android:scaleType="centerCrop"
+            android:visibility="invisible"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:src="@drawable/loading"
+            android:maxHeight="400dp"
+            />
         <RelativeLayout
             android:id="@+id/corner_left"
             android:layout_width="9dp"
@@ -142,13 +151,5 @@
             android:layout_alignParentTop="true"
             />
     </RelativeLayout>
-    <!--<ImageView-->
-        <!--android:id="@+id/ads"-->
-        <!--android:scaleType="centerCrop"-->
-        <!--android:visibility="gone"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:src="@drawable/loading"-->
-        <!--android:maxHeight="400dp"-->
-        <!--/>-->
+
 </LinearLayout>

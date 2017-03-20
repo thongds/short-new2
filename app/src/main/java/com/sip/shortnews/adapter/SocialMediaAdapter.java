@@ -113,6 +113,8 @@ public class SocialMediaAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         ImageView mYoutubePlay;
         ImageView mGifPlay;
         SimpleDraweeView facebookLoadImage;
+        RelativeLayout mRlContent;
+        ImageView mImageAds;
         int mClickPosition;
 
         DetailClickListener mDetailClickListener;
@@ -130,6 +132,8 @@ public class SocialMediaAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             mPlayImage = (ImageView)v.findViewById(R.id.play_image_social);
             mYoutubePlay = (ImageView)v.findViewById(R.id.youtube_play_image_social);
             mGifPlay = (ImageView)v.findViewById(R.id.gif_play_image_social);
+            mImageAds = (ImageView)v.findViewById(R.id.ads);
+            mRlContent = (RelativeLayout)v.findViewById(R.id.centre_content);
             RelativeLayout relativeLayout = (RelativeLayout)v.findViewById(R.id.rl_video);
             relativeLayout.setOnClickListener(this);
             mPlayImage.setOnClickListener(this);
@@ -142,60 +146,68 @@ public class SocialMediaAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             ImageLoader.getInstance().displayImage(socialMediaItem.getSocial_logo(),mSocialLogo);
             ImageLoader.getInstance().displayImage(socialMediaItem.getFanpage_logo(),mPageLogo);
             String[] post_image = socialMediaItem.getPost_image_url().split(socialMediaItem.getSeparate_image_tag());
-            mPageName.setText(socialMediaItem.getFanpage_name());
-            mClickPosition = clickPosition;
-            mPostImage.setVisibility(View.VISIBLE);
-            facebookLoadImage.setVisibility(View.INVISIBLE);
+            if(socialMediaItem.getIs_ads() == 1){
+                mRlContent.setVisibility(View.INVISIBLE);
+                mImageAds.setVisibility(View.VISIBLE);
+                playImage(context,"https://test.jpg",mImageAds);
+            }else {
+                mRlContent.setVisibility(View.VISIBLE);
+                mImageAds.setVisibility(View.INVISIBLE);
+                mPageName.setText(socialMediaItem.getFanpage_name());
+                mClickPosition = clickPosition;
+                mPostImage.setVisibility(View.VISIBLE);
+                facebookLoadImage.setVisibility(View.INVISIBLE);
 
-            switch (socialMediaItem.getSocial_content_type_id()){
+                switch (socialMediaItem.getSocial_content_type_id()) {
 
-                case 0://video
-                    ImageLoader.getInstance().displayImage(socialMediaItem.getVideo_tag(),mVideoTag);
-                    if(post_image!=null &&post_image.length>1)
-                        //ImageLoader.getInstance().displayImage(post_image[1],mPostImage,displayImageOptions);
-                        playImage(context,post_image[1],mPostImage);
-                    mVideoTag.setVisibility(View.VISIBLE);
-                    mGifPlay.setVisibility(View.INVISIBLE);
-                    mYoutubePlay.setVisibility(View.INVISIBLE);
-                    mPlayImage.setVisibility(View.VISIBLE);
-                    break;
-                case 1://image
-                    mYoutubePlay.setVisibility(View.INVISIBLE);
-                    mPlayImage.setVisibility(View.INVISIBLE);
-                    mVideoTag.setVisibility(View.INVISIBLE);
-                    mGifPlay.setVisibility(View.INVISIBLE);
-                    mPostImage.setOnClickListener(this);
-                    if(post_image!=null &&post_image.length>0)
-                        //ImageLoader.getInstance().displayImage(post_image[0],mPostImage,displayImageOptions);
-                        playImage(context,post_image[0],mPostImage);
-                    break;
-                case 2://gif
-                    mYoutubePlay.setVisibility(View.INVISIBLE);
-                    mPlayImage.setVisibility(View.INVISIBLE);
-                    mVideoTag.setVisibility(View.INVISIBLE);
-                    facebookLoadImage.setVisibility(View.VISIBLE);
-                   mGifPlay.setVisibility(View.VISIBLE);
+                    case 0://video
+                        ImageLoader.getInstance().displayImage(socialMediaItem.getVideo_tag(), mVideoTag);
+                        if (post_image != null && post_image.length > 1)
+                            //ImageLoader.getInstance().displayImage(post_image[1],mPostImage,displayImageOptions);
+                            playImage(context, post_image[1], mPostImage);
+                        mVideoTag.setVisibility(View.VISIBLE);
+                        mGifPlay.setVisibility(View.INVISIBLE);
+                        mYoutubePlay.setVisibility(View.INVISIBLE);
+                        mPlayImage.setVisibility(View.VISIBLE);
+                        break;
+                    case 1://image
+                        mYoutubePlay.setVisibility(View.INVISIBLE);
+                        mPlayImage.setVisibility(View.INVISIBLE);
+                        mVideoTag.setVisibility(View.INVISIBLE);
+                        mGifPlay.setVisibility(View.INVISIBLE);
+                        mPostImage.setOnClickListener(this);
+                        if (post_image != null && post_image.length > 0)
+                            //ImageLoader.getInstance().displayImage(post_image[0],mPostImage,displayImageOptions);
+                            playImage(context, post_image[0], mPostImage);
+                        break;
+                    case 2://gif
+                        mYoutubePlay.setVisibility(View.INVISIBLE);
+                        mPlayImage.setVisibility(View.INVISIBLE);
+                        mVideoTag.setVisibility(View.INVISIBLE);
+                        facebookLoadImage.setVisibility(View.VISIBLE);
+                        mGifPlay.setVisibility(View.VISIBLE);
 //                    Glide.with(context).load(post_image[0]).diskCacheStrategy(DiskCacheStrategy.SOURCE).into(mPostImage);
 
-                    final Uri uri = Uri.parse(post_image[0]);
+                        final Uri uri = Uri.parse(post_image[0]);
 
-                    DraweeController controller = Fresco.newDraweeControllerBuilder()
-                            .setUri(uri)
-                            .setAutoPlayAnimations(true)
-                            .build();
-                    //Set the DraweeView controller, and you should be good to go.
-                    facebookLoadImage.setController(controller);
+                        DraweeController controller = Fresco.newDraweeControllerBuilder()
+                                .setUri(uri)
+                                .setAutoPlayAnimations(true)
+                                .build();
+                        //Set the DraweeView controller, and you should be good to go.
+                        facebookLoadImage.setController(controller);
 
 
-                    break;
-                case 3 :// youtube
-                    mYoutubePlay.setVisibility(View.VISIBLE);
-                    mPlayImage.setVisibility(View.INVISIBLE);
-                    if(post_image!=null &&post_image.length>0)
-                        playImage(context,post_image[1],mPostImage);
-                    break;
+                        break;
+                    case 3:// youtube
+                        mYoutubePlay.setVisibility(View.VISIBLE);
+                        mPlayImage.setVisibility(View.INVISIBLE);
+                        if (post_image != null && post_image.length > 0)
+                            playImage(context, post_image[1], mPostImage);
+                        break;
+                }
+                mPostTitle.setText(socialMediaItem.getTitle());
             }
-            mPostTitle.setText(socialMediaItem.getTitle());
         }
 
         @Override
