@@ -19,6 +19,7 @@ import com.sip.shortnews.model.HeaderModel;
 import com.sip.shortnews.model.NewsHomeItem;
 import com.sip.shortnews.model.NewsHomeSection;
 import com.sip.shortnews.service.home_api.HomeMediaService;
+import com.wang.avi.AVLoadingIndicatorView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,10 +45,12 @@ public class NewsFragment extends PFragment {
     private int mPage = 0;
     private NewsFragment mFragment;
     private Context mContext;
+    private AVLoadingIndicatorView avLoadingIndicatorView;
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.news_medial_holder_layout,container,false);
+        avLoadingIndicatorView = (AVLoadingIndicatorView)view.findViewById(R.id.loading);
         mRecyclerView = (RecyclerView) view.findViewById(R.id.recycle_view);
         mErrorView = (ErrorView)view.findViewById(R.id.error_view);
         mLayoutManager = new LinearLayoutManager(getContext());
@@ -80,7 +83,7 @@ public class NewsFragment extends PFragment {
         mErrorView.setOnRetryListener(new ErrorView.RetryListener() {
             @Override
             public void onRetry() {
-                Toast.makeText(mContext,"click retry",Toast.LENGTH_LONG).show();
+                //Toast.makeText(mContext,"click retry",Toast.LENGTH_LONG).show();
                 mFragment.callService(0,false);
             }
         });
@@ -91,12 +94,15 @@ public class NewsFragment extends PFragment {
 
     private void callService(final int page, final boolean isRefreshing) {
         mErrorView.setVisibility(View.INVISIBLE);
+        if(page == 0 && isRefreshing == false)
+            avLoadingIndicatorView.show();
         HomeMediaService.Service service = HomeMediaService.service();
         service.getNews(page).enqueue(new Callback<NewsHomeSection>() {
             @Override
             public void onResponse(Call<NewsHomeSection> call, Response<NewsHomeSection> response) {
                 if(response.isSuccessful()) {
                     mRecyclerView.setVisibility(View.VISIBLE);
+                    avLoadingIndicatorView.hide();
                     if(response.body().getData().size() >0){
                         mList.addAll(response.body().getData());
                         if (page == 0){
@@ -117,11 +123,12 @@ public class NewsFragment extends PFragment {
             @Override
             public void onFailure(Call<NewsHomeSection> call, Throwable t) {
                 t.printStackTrace();
-                mRecyclerView.setVisibility(View.INVISIBLE);
+                mRecyclerView.setVisibility(View.GONE);
+                avLoadingIndicatorView.setVisibility(View.GONE);
                 if(page == 0 && isRefreshing == false)
                     mErrorView.setVisibility(View.VISIBLE);
                 mRefresh.setRefreshing(false);
-                Toast.makeText(getContext(),"network error!",Toast.LENGTH_LONG).show();
+               // Toast.makeText(getContext(),"network error!",Toast.LENGTH_LONG).show();
             }
 
         });

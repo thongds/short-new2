@@ -23,6 +23,7 @@ import com.sip.shortnews.model.NewsHomeItem;
 import com.sip.shortnews.model.SocialMediaItem;
 import com.sip.shortnews.model.SocialMediaSection;
 import com.sip.shortnews.service.home_api.HomeMediaService;
+import com.wang.avi.AVLoadingIndicatorView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,6 +31,7 @@ import java.util.List;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import tr.xip.errorview.ErrorView;
 
 /**
  * Created by ssd on 8/20/16.
@@ -42,6 +44,9 @@ public class SocialFragment extends PFragment {
     private  List<SocialMediaItem> mList;
     private SocialMediaAdapter mSocialMediaAdapter;
     private int mPage = 0;
+    private SocialFragment mFragment;
+    private ErrorView mErrorView;
+    private AVLoadingIndicatorView avLoadingIndicatorView;
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -51,6 +56,8 @@ public class SocialFragment extends PFragment {
         mList = new ArrayList<>();
         mSocialMediaAdapter = new SocialMediaAdapter(getActivity(),mList, detailClickListener);
         mRecyclerView.setAdapter(mSocialMediaAdapter);
+        mErrorView = (ErrorView)view.findViewById(R.id.error_view);
+        avLoadingIndicatorView = (AVLoadingIndicatorView)view.findViewById(R.id.loading);
         mScrollListener = new EndlessRecyclerViewScrollListener(mLayoutManager) {
             @Override
             public void onLoadMore(int page, int totalItemsCount) {
@@ -71,10 +78,18 @@ public class SocialFragment extends PFragment {
             }
         });
         callService(mPage,false);
+        mErrorView.setOnRetryListener(new ErrorView.RetryListener() {
+            @Override
+            public void onRetry() {
+                mFragment.callService(0,false);
+            }
+        });
         return view;
     }
 
     private void callService(final int page, final boolean isRefreshing) {
+        mErrorView.setVisibility(View.GONE);
+        avLoadingIndicatorView.show();
         HomeMediaService.service().getSocial(page).enqueue(new Callback<SocialMediaSection>() {
             @Override
             public void onResponse(Call<SocialMediaSection> call, Response<SocialMediaSection> response) {
@@ -92,12 +107,17 @@ public class SocialFragment extends PFragment {
                         }
                         mSocialMediaAdapter.notifyDataSetChanged();
                     }
+                    avLoadingIndicatorView.hide();
                 }
             }
 
             @Override
             public void onFailure(Call<SocialMediaSection> call, Throwable t) {
-                Toast.makeText(getContext(),"network error!",Toast.LENGTH_LONG).show();
+                //Toast.makeText(getContext(),"network error!",Toast.LENGTH_LONG).show();
+                mRecyclerView.setVisibility(View.GONE);
+                avLoadingIndicatorView.setVisibility(View.GONE);
+                if(page == 0 && isRefreshing == false)
+                    mErrorView.setVisibility(View.GONE);
                 mRefresh.setRefreshing(false);
                 t.printStackTrace();
             }
@@ -133,5 +153,9 @@ public class SocialFragment extends PFragment {
         }
     };
 
-
+    @Override
+    public void onResume() {
+        super.onResume();
+        mFragment = this;
+    }
 }

@@ -4,15 +4,14 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@drawable/background">
-    <tr.xip.errorview.ErrorView
-        android:visibility="gone"
-        android:id="@+id/error_view"
+
+    <com.wang.avi.AVLoadingIndicatorView
+        android:id="@+id/loading"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        app:indicatorName="BallClipRotatePulseIndicator"
         android:layout_centerInParent="true"
-        app:ev_retryButtonText="THỬ LẠI"
-        app:ev_retryButtonTextColor="@color/colorRed"
-        app:ev_subtitle="Không Thể Kết Nối Với Server !" />
+        />
     <android.support.v4.widget.SwipeRefreshLayout
         android:visibility="visible"
         android:id="@+id/refresh"
@@ -28,5 +27,15 @@
             android:paddingLeft="10dp"
 
         />
+
     </android.support.v4.widget.SwipeRefreshLayout>
+    <tr.xip.errorview.ErrorView
+        android:visibility="gone"
+        android:id="@+id/error_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        app:ev_retryButtonText="THỬ LẠI"
+        app:ev_retryButtonTextColor="@color/colorRed"
+        app:ev_subtitle="Không Thể Kết Nối Với Server !" />
 </RelativeLayout>
