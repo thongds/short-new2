@@ -8,6 +8,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -47,6 +48,7 @@ public class SocialFragment extends PFragment {
     private SocialFragment mFragment;
     private ErrorView mErrorView;
     private AVLoadingIndicatorView avLoadingIndicatorView;
+    private boolean mIsRefresh;
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -84,10 +86,19 @@ public class SocialFragment extends PFragment {
                 mFragment.callService(0,false);
             }
         });
+        mRecyclerView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                if(mIsRefresh)
+                    return  true;
+                return false;
+            }
+        });
         return view;
     }
 
     private void callService(final int page, final boolean isRefreshing) {
+        mIsRefresh = isRefreshing;
         mErrorView.setVisibility(View.GONE);
         avLoadingIndicatorView.show();
         HomeMediaService.service().getSocial(page).enqueue(new Callback<SocialMediaSection>() {
@@ -108,12 +119,14 @@ public class SocialFragment extends PFragment {
                         mSocialMediaAdapter.notifyDataSetChanged();
                     }
                     avLoadingIndicatorView.hide();
+                    mIsRefresh = false;
                 }
             }
 
             @Override
             public void onFailure(Call<SocialMediaSection> call, Throwable t) {
                 //Toast.makeText(getContext(),"network error!",Toast.LENGTH_LONG).show();
+                mIsRefresh = false;
                 mRecyclerView.setVisibility(View.GONE);
                 avLoadingIndicatorView.setVisibility(View.GONE);
                 if(page == 0 && isRefreshing == false)

@@ -7,6 +7,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
@@ -46,6 +47,8 @@ public class NewsFragment extends PFragment {
     private NewsFragment mFragment;
     private Context mContext;
     private AVLoadingIndicatorView avLoadingIndicatorView;
+    private MainActivity mMainActive;
+    private boolean mIsRefresh;
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -87,12 +90,21 @@ public class NewsFragment extends PFragment {
                 mFragment.callService(0,false);
             }
         });
+        mRecyclerView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                if(mIsRefresh)
+                    return  true;
+                return false;
+            }
+        });
         callService(mPage,false);
 
         return view;
     }
 
     private void callService(final int page, final boolean isRefreshing) {
+        mIsRefresh = isRefreshing;
         mErrorView.setVisibility(View.INVISIBLE);
         if(page == 0 && isRefreshing == false)
             avLoadingIndicatorView.show();
@@ -101,6 +113,7 @@ public class NewsFragment extends PFragment {
             @Override
             public void onResponse(Call<NewsHomeSection> call, Response<NewsHomeSection> response) {
                 if(response.isSuccessful()) {
+
                     mRecyclerView.setVisibility(View.VISIBLE);
                     avLoadingIndicatorView.hide();
                     if(response.body().getData().size() >0){
@@ -117,12 +130,14 @@ public class NewsFragment extends PFragment {
                         mRefresh.setRefreshing(false);
                         mScrollListener.reset();
                     }
+                    mIsRefresh = false;
                 }
             }
 
             @Override
             public void onFailure(Call<NewsHomeSection> call, Throwable t) {
                 t.printStackTrace();
+                mIsRefresh = false;
                 mRecyclerView.setVisibility(View.GONE);
                 avLoadingIndicatorView.setVisibility(View.GONE);
                 if(page == 0 && isRefreshing == false)
@@ -159,5 +174,6 @@ public class NewsFragment extends PFragment {
     public void onResume() {
         super.onResume();
         mFragment = this;
+        mMainActive = (MainActivity)getActivity();
     }
 }
