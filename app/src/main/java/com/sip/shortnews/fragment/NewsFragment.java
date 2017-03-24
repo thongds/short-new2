@@ -1,5 +1,6 @@
 package com.sip.shortnews.fragment;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -25,6 +26,7 @@ import java.util.List;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import tr.xip.errorview.ErrorView;
 
 /**
  * Created by ssd on 8/14/16.
@@ -38,18 +40,24 @@ public class NewsFragment extends PFragment {
     private  List<NewsHomeItem> mList;
     private HeaderModel mHeaderModel;
     private NewsMediaAdapter mNewsMediaAdapter;
+    private ErrorView mErrorView;
     private int mPage = 0;
+    private NewsFragment mFragment;
+    private Context mContext;
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.news_medial_holder_layout,container,false);
         mRecyclerView = (RecyclerView) view.findViewById(R.id.recycle_view);
+        mErrorView = (ErrorView)view.findViewById(R.id.error_view);
         mLayoutManager = new LinearLayoutManager(getContext());
         mainActivity = (MainActivity)getActivity();
         mRecyclerView.setLayoutManager(mLayoutManager);
         mList = new ArrayList<>();
+        mContext = getContext();
         mNewsMediaAdapter = new NewsMediaAdapter(mainActivity, mHeaderModel,mList,ifItemClick);
         mRecyclerView.setAdapter(mNewsMediaAdapter);
+        mFragment = this;
         mScrollListener = new EndlessRecyclerViewScrollListener(mLayoutManager) {
             @Override
             public void onLoadMore(int page, int totalItemsCount) {
@@ -69,17 +77,26 @@ public class NewsFragment extends PFragment {
                 }
             }
         });
+        mErrorView.setOnRetryListener(new ErrorView.RetryListener() {
+            @Override
+            public void onRetry() {
+                Toast.makeText(mContext,"click retry",Toast.LENGTH_LONG).show();
+                mFragment.callService(0,false);
+            }
+        });
         callService(mPage,false);
 
         return view;
     }
 
     private void callService(final int page, final boolean isRefreshing) {
+        mErrorView.setVisibility(View.INVISIBLE);
         HomeMediaService.Service service = HomeMediaService.service();
         service.getNews(page).enqueue(new Callback<NewsHomeSection>() {
             @Override
             public void onResponse(Call<NewsHomeSection> call, Response<NewsHomeSection> response) {
                 if(response.isSuccessful()) {
+                    mRecyclerView.setVisibility(View.VISIBLE);
                     if(response.body().getData().size() >0){
                         mList.addAll(response.body().getData());
                         if (page == 0){
@@ -100,6 +117,9 @@ public class NewsFragment extends PFragment {
             @Override
             public void onFailure(Call<NewsHomeSection> call, Throwable t) {
                 t.printStackTrace();
+                mRecyclerView.setVisibility(View.INVISIBLE);
+                if(page == 0 && isRefreshing == false)
+                    mErrorView.setVisibility(View.VISIBLE);
                 mRefresh.setRefreshing(false);
                 Toast.makeText(getContext(),"network error!",Toast.LENGTH_LONG).show();
             }
@@ -128,4 +148,9 @@ public class NewsFragment extends PFragment {
         }
     };
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        mFragment = this;
+    }
 }

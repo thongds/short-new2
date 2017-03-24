@@ -27,13 +27,13 @@ import retrofit2.http.Query;
 public class HomeMediaService {
 
     static final OkHttpClient okHttpClient = new OkHttpClient.Builder()
-            .readTimeout(60, TimeUnit.SECONDS)
-            .connectTimeout(60, TimeUnit.SECONDS)
+            .readTimeout(10, TimeUnit.SECONDS)
+            .connectTimeout(10, TimeUnit.SECONDS)
             .build();
 
     public static Service service (){
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://192.168.1.102/ShortNews_Server/public/")
+                .baseUrl("http://tinexpress.vn/")
                 .client(okHttpClient)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
