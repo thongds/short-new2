@@ -70,10 +70,12 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
     ViewPager mViewPager;
     SlidingTabLayout mSlidingTabLayout;
     DilatingDotsProgressBar mDilatingDotsProgressBar;
+    private RelativeLayout mRlProgress;
     ErrorView mErrorView;
     private MainActivity mMainActivity;
     private String mLinkUpdate;
     private Tracker mTracker;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -87,12 +89,14 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         mRlUpdate = (RelativeLayout)findViewById(R.id.rl_update);
         mUpdateMessage = (TextView)findViewById(R.id.update_message);
         mUpdateLink = (TextView)findViewById(R.id.update_link);
+        mRlProgress = (RelativeLayout) findViewById(R.id.rl_progress);
         mFragmentManager = getSupportFragmentManager();
         //ImageView menu = (ImageView)findViewById(R.id.navigate);
         //TextView textView = (TextView)findViewById(R.id.day_left);
         mLoadProgress = (RelativeLayout)findViewById(R.id.load_progress);
         mErrorView = (ErrorView)findViewById(R.id.error_view);
         mDilatingDotsProgressBar = (DilatingDotsProgressBar) findViewById(R.id.progress);
+        mDilatingDotsProgressBar.show();
         mMainActivity = this;
         mLoadProgress.setVisibility(View.VISIBLE);
         //Typeface typeface = Typeface.createFromAsset(getAssets(),"fonts/brush.ttf");
@@ -118,7 +122,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
 
     private void loadFragment(){
         mErrorView.setVisibility(View.GONE);
-        mDilatingDotsProgressBar.show();
+        mRlProgress.setVisibility(View.VISIBLE);
         HomeMediaService.service().checkVersion("1.0","1").enqueue(new Callback<SupportResponse>() {
             @Override
             public void onResponse(Call<SupportResponse> call, Response<SupportResponse> response) {
@@ -128,7 +132,8 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                         FragmentAdapter fragmentAdapter = new FragmentAdapter(mFragmentManager);
                         mViewPager.setAdapter(fragmentAdapter);
                         mSlidingTabLayout.setViewPager(mViewPager);
-                        mDilatingDotsProgressBar.hide();
+                        mRlProgress.setVisibility(View.GONE);
+                        //mDilatingDotsProgressBar.hide();
                         mErrorView.setVisibility(View.GONE);
                         mLoadProgress.setVisibility(View.GONE);
                         AppApplication application = (AppApplication) getApplication();
@@ -136,7 +141,8 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                         mTracker.setScreenName("Android MainActivity");
                         mTracker.send(new HitBuilders.ScreenViewBuilder().build());
                     }else{
-                        mDilatingDotsProgressBar.hide();
+                        mRlProgress.setVisibility(View.GONE);
+                        //mDilatingDotsProgressBar.hide();
                         mRlUpdate.setVisibility(View.VISIBLE);
                         mLinkUpdate = supportResponse.getLink_update();
                         mUpdateMessage.setText(supportResponse.getMessage_update());
@@ -146,7 +152,8 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
 
             @Override
             public void onFailure(Call<SupportResponse> call, Throwable t) {
-                mDilatingDotsProgressBar.hide();
+                mRlProgress.setVisibility(View.GONE);
+                //mDilatingDotsProgressBar.hide();
                 mErrorView.setVisibility(View.VISIBLE);
             }
         });

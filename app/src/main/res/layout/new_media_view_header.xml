@@ -18,7 +18,7 @@
     android:layout_height="wrap_content"
     android:layout_marginLeft="20dp"
     android:textColor="@color/colorWhite"
-    android:text="cac tin chinh sang nay"
+    android:text="Các Tin Chính Hôm Nay"
     android:textAlignment="center"
     android:layout_centerVertical="true"
     android:layout_toRightOf="@+id/session_logo"/>
@@ -30,7 +30,6 @@
     android:layout_below="@+id/session_label"
     android:layout_marginTop="20dp"
     android:layout_marginLeft="20dp"
-    android:text="chao mung 8/3"
     android:textAlignment="center"
     android:textColor="@color/colorRed"/>
 </RelativeLayout>

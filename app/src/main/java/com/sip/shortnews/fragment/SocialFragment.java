@@ -101,7 +101,8 @@ public class SocialFragment extends PFragment implements AdapterView.OnItemClick
     private void callService(final int page, final boolean isRefreshing) {
         mIsRefresh = isRefreshing;
         mErrorView.setVisibility(View.GONE);
-        avLoadingIndicatorView.show();
+        if(page == 0 && isRefreshing == false)
+            avLoadingIndicatorView.show();
         HomeMediaService.service().getSocial(page).enqueue(new Callback<SocialMediaSection>() {
             @Override
             public void onResponse(Call<SocialMediaSection> call, Response<SocialMediaSection> response) {
@@ -142,8 +143,10 @@ public class SocialFragment extends PFragment implements AdapterView.OnItemClick
         @Override
         public void showDetail(int position, List<SocialMediaItem> data) {
             MainActivity mainActivity = (MainActivity)getActivity();
+            List<SocialMediaItem> singleData = new ArrayList<>();
             try{
                 data.get(position);
+                singleData.add(data.get(position));
             }catch (RuntimeException e){
                 return;
             }
@@ -166,7 +169,7 @@ public class SocialFragment extends PFragment implements AdapterView.OnItemClick
                 }
             }else{
                 DetailViewPageFragment detailViewPageFragment = new DetailViewPageFragment();
-                detailViewPageFragment.setArg(data,position);
+                detailViewPageFragment.setArg(singleData,0);
                 mainActivity.replaceBackground(detailViewPageFragment);
             }
         }
