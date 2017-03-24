@@ -93,9 +93,7 @@ public class NewsFragment extends PFragment {
         mRecyclerView.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
-                if(mIsRefresh)
-                    return  true;
-                return false;
+                return  mIsRefresh;
             }
         });
         callService(mPage,false);

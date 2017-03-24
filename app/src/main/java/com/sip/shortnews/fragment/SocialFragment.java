@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -28,6 +29,7 @@ import com.wang.avi.AVLoadingIndicatorView;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -37,7 +39,7 @@ import tr.xip.errorview.ErrorView;
 /**
  * Created by ssd on 8/20/16.
  */
-public class SocialFragment extends PFragment {
+public class SocialFragment extends PFragment implements AdapterView.OnItemClickListener {
     private LinearLayoutManager mLayoutManager;
     private SwipeRefreshLayout mRefresh;
     private RecyclerView mRecyclerView;
@@ -89,9 +91,8 @@ public class SocialFragment extends PFragment {
         mRecyclerView.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
-                if(mIsRefresh)
-                    return  true;
-                return false;
+               return mIsRefresh;
+
             }
         });
         return view;
@@ -141,6 +142,11 @@ public class SocialFragment extends PFragment {
         @Override
         public void showDetail(int position, List<SocialMediaItem> data) {
             MainActivity mainActivity = (MainActivity)getActivity();
+            try{
+                data.get(position);
+            }catch (RuntimeException e){
+                return;
+            }
             if(data.get(position).getSocial_content_type_id() == SocialContentType.YOUTUBE.getValue()){
                 String[] splitData = data.get(position).getPost_image_url().split(data.get(position).getSeparate_image_tag());
                 if(data.get(position).getSocial_content_type_id() == SocialContentType.YOUTUBE.getValue()){
@@ -170,5 +176,10 @@ public class SocialFragment extends PFragment {
     public void onResume() {
         super.onResume();
         mFragment = this;
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+
     }
 }
