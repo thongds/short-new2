@@ -114,6 +114,24 @@
                     android:layout_width="match_parent"
                     android:src="@drawable/vnexpress_post"
                     android:layout_height="wrap_content"/>
+                <RelativeLayout
+                    android:visibility="invisible"
+                    android:id="@+id/image_more"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:background="#26000000"
+                    android:layout_alignParentBottom="true"
+                    android:layout_alignParentRight="true"
+                    >
+                    <TextView
+                        android:id="@+id/number_image"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="+16"
+                        android:textColor="@color/colorWhite"
+                        android:layout_centerInParent="true"
+                        android:textSize="30sp"/>
+                </RelativeLayout>
                 <ImageView
                     android:id="@+id/play_image_social"
                     android:visibility="invisible"

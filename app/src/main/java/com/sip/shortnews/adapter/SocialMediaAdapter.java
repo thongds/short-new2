@@ -115,6 +115,8 @@ public class SocialMediaAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         SimpleDraweeView facebookLoadImage;
         RelativeLayout mRlContent;
         ImageView mImageAds;
+        RelativeLayout mImageMore;
+        TextView mNumberImage;
         int mClickPosition;
 
         DetailClickListener mDetailClickListener;
@@ -134,6 +136,8 @@ public class SocialMediaAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             mGifPlay = (ImageView)v.findViewById(R.id.gif_play_image_social);
             mImageAds = (ImageView)v.findViewById(R.id.ads);
             mRlContent = (RelativeLayout)v.findViewById(R.id.centre_content);
+            mImageMore = (RelativeLayout)v.findViewById(R.id.image_more);
+            mNumberImage = (TextView)v.findViewById(R.id.number_image);
             RelativeLayout relativeLayout = (RelativeLayout)v.findViewById(R.id.rl_video);
             relativeLayout.setOnClickListener(this);
             mPlayImage.setOnClickListener(this);
@@ -176,9 +180,17 @@ public class SocialMediaAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                         mVideoTag.setVisibility(View.INVISIBLE);
                         mGifPlay.setVisibility(View.INVISIBLE);
                         mPostImage.setOnClickListener(this);
-                        if (post_image != null && post_image.length > 0)
-                            //ImageLoader.getInstance().displayImage(post_image[0],mPostImage,displayImageOptions);
+                        if (post_image != null && post_image.length > 0){
                             playImage(context, post_image[0], mPostImage);
+                            if(post_image.length>1){
+                                mImageMore.setVisibility(View.VISIBLE);
+                                mNumberImage.setText("+"+post_image.length);
+                            }else{
+                                mImageMore.setVisibility(View.INVISIBLE);
+                            }
+
+                        }
+
                         break;
                     case 2://gif
                         mYoutubePlay.setVisibility(View.INVISIBLE);
