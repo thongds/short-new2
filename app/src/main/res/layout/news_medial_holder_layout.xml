@@ -19,16 +19,25 @@
         android:layout_height="match_parent">
 
         <android.support.v7.widget.RecyclerView
-            android:id="@+id/recycle_view"
-            android:scrollbars="none"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:paddingRight="10dp"
-            android:paddingLeft="10dp"
-
-        />
-
+                android:id="@+id/recycle_view"
+                android:scrollbars="none"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingRight="10dp"
+                android:paddingLeft="10dp"/>
     </android.support.v4.widget.SwipeRefreshLayout>
+    <com.zl.reik.dilatingdotsprogressbar.DilatingDotsProgressBar
+        android:id="@+id/load_more_progress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:radius="5dp"
+        android:color="#377B8F"
+        app:dd_numDots="7"
+        app:dd_scaleMultiplier="1.5"
+        app:dd_animationDuration="500"
+        app:dd_horizontalSpacing="4dp"/>
     <tr.xip.errorview.ErrorView
         android:visibility="gone"
         android:id="@+id/error_view"
@@ -38,4 +47,6 @@
         app:ev_retryButtonText="THỬ LẠI"
         app:ev_retryButtonTextColor="@color/colorRed"
         app:ev_subtitle="Không Thể Kết Nối Với Server !" />
+
+
 </RelativeLayout>

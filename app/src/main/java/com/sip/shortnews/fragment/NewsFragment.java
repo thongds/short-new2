@@ -21,6 +21,7 @@ import com.sip.shortnews.model.NewsHomeItem;
 import com.sip.shortnews.model.NewsHomeSection;
 import com.sip.shortnews.service.home_api.HomeMediaService;
 import com.wang.avi.AVLoadingIndicatorView;
+import com.zl.reik.dilatingdotsprogressbar.DilatingDotsProgressBar;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,6 +50,7 @@ public class NewsFragment extends PFragment {
     private AVLoadingIndicatorView avLoadingIndicatorView;
     private MainActivity mMainActive;
     private boolean mIsRefresh;
+    DilatingDotsProgressBar mDilatingDotsProgressBar;
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -64,6 +66,8 @@ public class NewsFragment extends PFragment {
         mNewsMediaAdapter = new NewsMediaAdapter(mainActivity, mHeaderModel,mList,ifItemClick);
         mRecyclerView.setAdapter(mNewsMediaAdapter);
         mFragment = this;
+        mDilatingDotsProgressBar = (DilatingDotsProgressBar)view.findViewById(R.id.load_more_progress);
+        mDilatingDotsProgressBar.hide();
         mScrollListener = new EndlessRecyclerViewScrollListener(mLayoutManager) {
             @Override
             public void onLoadMore(int page, int totalItemsCount) {
@@ -106,6 +110,8 @@ public class NewsFragment extends PFragment {
         mErrorView.setVisibility(View.INVISIBLE);
         if(page == 0 && isRefreshing == false)
             avLoadingIndicatorView.show();
+        if(page!=0)
+            mDilatingDotsProgressBar.show();
         HomeMediaService.Service service = HomeMediaService.service();
         service.getNews(page).enqueue(new Callback<NewsHomeSection>() {
             @Override
@@ -129,6 +135,7 @@ public class NewsFragment extends PFragment {
                         mScrollListener.reset();
                     }
                     mIsRefresh = false;
+                    mDilatingDotsProgressBar.hide();
                 }
             }
 
@@ -137,10 +144,12 @@ public class NewsFragment extends PFragment {
                 t.printStackTrace();
                 mIsRefresh = false;
                 mRecyclerView.setVisibility(View.GONE);
+                mDilatingDotsProgressBar.hide();
                 avLoadingIndicatorView.setVisibility(View.GONE);
                 if(page == 0 && isRefreshing == false)
                     mErrorView.setVisibility(View.VISIBLE);
                 mRefresh.setRefreshing(false);
+
                // Toast.makeText(getContext(),"network error!",Toast.LENGTH_LONG).show();
             }
 

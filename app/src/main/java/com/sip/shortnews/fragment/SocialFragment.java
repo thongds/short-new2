@@ -26,6 +26,7 @@ import com.sip.shortnews.model.SocialMediaItem;
 import com.sip.shortnews.model.SocialMediaSection;
 import com.sip.shortnews.service.home_api.HomeMediaService;
 import com.wang.avi.AVLoadingIndicatorView;
+import com.zl.reik.dilatingdotsprogressbar.DilatingDotsProgressBar;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,6 +51,7 @@ public class SocialFragment extends PFragment implements AdapterView.OnItemClick
     private SocialFragment mFragment;
     private ErrorView mErrorView;
     private AVLoadingIndicatorView avLoadingIndicatorView;
+    DilatingDotsProgressBar mDilatingDotsProgressBar;
     private boolean mIsRefresh;
     @Nullable
     @Override
@@ -62,6 +64,8 @@ public class SocialFragment extends PFragment implements AdapterView.OnItemClick
         mRecyclerView.setAdapter(mSocialMediaAdapter);
         mErrorView = (ErrorView)view.findViewById(R.id.error_view);
         avLoadingIndicatorView = (AVLoadingIndicatorView)view.findViewById(R.id.loading);
+        mDilatingDotsProgressBar = (DilatingDotsProgressBar)view.findViewById(R.id.load_more_progress);
+        mDilatingDotsProgressBar.hide();
         mScrollListener = new EndlessRecyclerViewScrollListener(mLayoutManager) {
             @Override
             public void onLoadMore(int page, int totalItemsCount) {
@@ -103,6 +107,8 @@ public class SocialFragment extends PFragment implements AdapterView.OnItemClick
         mErrorView.setVisibility(View.GONE);
         if(page == 0 && isRefreshing == false)
             avLoadingIndicatorView.show();
+        if(page!=0)
+            mDilatingDotsProgressBar.show();
         HomeMediaService.service().getSocial(page).enqueue(new Callback<SocialMediaSection>() {
             @Override
             public void onResponse(Call<SocialMediaSection> call, Response<SocialMediaSection> response) {
@@ -122,6 +128,7 @@ public class SocialFragment extends PFragment implements AdapterView.OnItemClick
                     }
                     avLoadingIndicatorView.hide();
                     mIsRefresh = false;
+                    mDilatingDotsProgressBar.hide();
                 }
             }
 
@@ -131,6 +138,7 @@ public class SocialFragment extends PFragment implements AdapterView.OnItemClick
                 mIsRefresh = false;
                 mRecyclerView.setVisibility(View.GONE);
                 avLoadingIndicatorView.setVisibility(View.GONE);
+                mDilatingDotsProgressBar.hide();
                 if(page == 0 && isRefreshing == false)
                     mErrorView.setVisibility(View.GONE);
                 mRefresh.setRefreshing(false);
