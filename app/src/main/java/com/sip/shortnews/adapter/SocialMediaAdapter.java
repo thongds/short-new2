@@ -214,6 +214,7 @@ public class SocialMediaAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                     case 3:// youtube
                         mYoutubePlay.setVisibility(View.VISIBLE);
                         mPlayImage.setVisibility(View.INVISIBLE);
+                        mImageMore.setVisibility(View.GONE);
                         if (post_image != null && post_image.length > 0)
                             playImage(context, post_image[1], mPostImage);
                         break;
