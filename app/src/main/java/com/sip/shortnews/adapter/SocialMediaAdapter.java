@@ -74,7 +74,7 @@ public class SocialMediaAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         }
         if(holder instanceof VH){
             VH vh = (VH)holder;
-            vh.pushData(mContext,socialMediaItemList.get(position-1),position-1,mDisplayOption);
+            vh.pushData(mContext,socialMediaItemList.get(position-1),position-1);
         }
 
     }
@@ -144,7 +144,7 @@ public class SocialMediaAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             mYoutubePlay.setOnClickListener(this);
             mPostTitle.setOnClickListener(this);
         }
-        public void pushData(final Context context, final SocialMediaItem socialMediaItem, int clickPosition, DisplayImageOptions displayImageOptions){
+        public void pushData(final Context context, final SocialMediaItem socialMediaItem, int clickPosition){
             GradientDrawable gd = (GradientDrawable) mTagPost.getBackground().getCurrent();
             gd.setColor(Color.parseColor(socialMediaItem.getColor_tag()));
             ImageLoader.getInstance().displayImage(socialMediaItem.getSocial_logo(),mSocialLogo);
@@ -186,7 +186,7 @@ public class SocialMediaAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                                 mImageMore.setVisibility(View.VISIBLE);
                                 mNumberImage.setText("+"+post_image.length);
                             }else{
-                                mImageMore.setVisibility(View.INVISIBLE);
+                                mImageMore.setVisibility(View.GONE);
                             }
 
                         }

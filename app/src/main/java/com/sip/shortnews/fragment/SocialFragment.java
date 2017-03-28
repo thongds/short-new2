@@ -15,8 +15,12 @@ import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
+import com.sip.shortnews.AppApplication;
 import com.sip.shortnews.MainActivity;
 import com.sip.shortnews.R;
+import com.sip.shortnews.Utilies.AnalaticEnum;
 import com.sip.shortnews.Utilies.SocialContentType;
 import com.sip.shortnews.VideoYoutubePlayerActivity;
 import com.sip.shortnews.adapter.SocialMediaAdapter;
@@ -85,7 +89,6 @@ public class SocialFragment extends PFragment implements AdapterView.OnItemClick
                 }
             }
         });
-        callService(mPage,false);
         mErrorView.setOnRetryListener(new ErrorView.RetryListener() {
             @Override
             public void onRetry() {
@@ -99,13 +102,16 @@ public class SocialFragment extends PFragment implements AdapterView.OnItemClick
 
             }
         });
+
+        callService(mPage,false);
         return view;
     }
 
     private void callService(final int page, final boolean isRefreshing) {
+        sentEvent(page);
         mIsRefresh = isRefreshing;
         mErrorView.setVisibility(View.GONE);
-        if(page == 0 && isRefreshing == false)
+        if(page == 0)
             avLoadingIndicatorView.show();
         if(page!=0)
             mDilatingDotsProgressBar.show();
@@ -113,40 +119,94 @@ public class SocialFragment extends PFragment implements AdapterView.OnItemClick
             @Override
             public void onResponse(Call<SocialMediaSection> call, Response<SocialMediaSection> response) {
                 if(response.isSuccessful()) {
-                    SocialMediaSection socialMediaSection = response.body();
-                    if(isRefreshing){
-                        mRefresh.setRefreshing(false);
-                        mScrollListener.reset();
-                        mList.clear();
-                    }
-                    if(socialMediaSection.getData().size()>0){
-                        mList.addAll(socialMediaSection.getData());
-                        if(page == 0){
-                            mSocialMediaAdapter.setmHeaderModel(socialMediaSection.getMessage());
-                        }
-                        mSocialMediaAdapter.notifyDataSetChanged();
-                    }
-                    avLoadingIndicatorView.hide();
-                    mIsRefresh = false;
-                    mDilatingDotsProgressBar.hide();
+                    mFragment.updateData(page,isRefreshing,response);
+//                    mRecyclerView.setVisibility(View.VISIBLE);
+//                    SocialMediaSection socialMediaSection = response.body();
+//                    if(isRefreshing){
+//                        mRefresh.setRefreshing(false);
+//                        mScrollListener.reset();
+//                        mList.clear();
+//                    }
+//                    if(socialMediaSection.getData().size()>0){
+//                        mList.addAll(socialMediaSection.getData());
+//                        if(page == 0){
+//                            mSocialMediaAdapter.setmHeaderModel(socialMediaSection.getMessage());
+//                        }
+//                        mSocialMediaAdapter.notifyDataSetChanged();
+//                    }
+//                    avLoadingIndicatorView.hide();
+//                    mIsRefresh = false;
+//                    mDilatingDotsProgressBar.hide();
                 }
             }
 
             @Override
             public void onFailure(Call<SocialMediaSection> call, Throwable t) {
+                mFragment.showError(page);
                 //Toast.makeText(getContext(),"network error!",Toast.LENGTH_LONG).show();
-                mIsRefresh = false;
-                mRecyclerView.setVisibility(View.GONE);
-                avLoadingIndicatorView.setVisibility(View.GONE);
-                mDilatingDotsProgressBar.hide();
-                if(page == 0 && isRefreshing == false)
-                    mErrorView.setVisibility(View.GONE);
-                mRefresh.setRefreshing(false);
+//                mIsRefresh = false;
+//
+//                avLoadingIndicatorView.hide();
+//                mDilatingDotsProgressBar.hide();
+//                if(page == 0 ){
+//                    mRecyclerView.setVisibility(View.GONE);
+//                    mErrorView.setVisibility(View.VISIBLE);
+//                }
+//                mRefresh.setRefreshing(false);
                 t.printStackTrace();
             }
         });
     }
+    public void updateData(int page,boolean isRefreshing,Response<SocialMediaSection> response){
 
+        mRecyclerView.setVisibility(View.VISIBLE);
+        SocialMediaSection socialMediaSection = response.body();
+        if(isRefreshing){
+            mRefresh.setRefreshing(false);
+            mScrollListener.reset();
+            mList.clear();
+        }
+        if(socialMediaSection.getData().size()>0){
+            mList.addAll(socialMediaSection.getData());
+            if(page == 0){
+                mSocialMediaAdapter.setmHeaderModel(socialMediaSection.getMessage());
+            }
+            mSocialMediaAdapter.notifyDataSetChanged();
+        }
+        avLoadingIndicatorView.hide();
+        mIsRefresh = false;
+        mDilatingDotsProgressBar.hide();
+        AppApplication appApplication = (AppApplication) getActivity().getApplication();
+        appApplication.sentEvent(AnalaticEnum.SOCIAL_PAGE_CATEGORY_EVENT.getValue(),AnalaticEnum.SOCIAL_PAGE_ACTION_SUCCESS_EVENT.getValue(),String.valueOf(page));
+
+    }
+    public void showError(int page){
+
+        mIsRefresh = false;
+
+        avLoadingIndicatorView.hide();
+        mDilatingDotsProgressBar.hide();
+        if(page == 0 ){
+            mRecyclerView.setVisibility(View.GONE);
+            mErrorView.setVisibility(View.VISIBLE);
+        }else{
+            Toast.makeText(getContext(),"network error!",Toast.LENGTH_LONG).show();
+        }
+        mRefresh.setRefreshing(false);
+        AppApplication appApplication = (AppApplication) getActivity().getApplication();
+        appApplication.sentEvent(AnalaticEnum.SOCIAL_PAGE_CATEGORY_EVENT.getValue(),AnalaticEnum.SOCIAL_PAGE_ACTION_ERROR_EVENT.getValue(),String.valueOf(page));
+
+    }
+    public void sentEvent(int page){
+        AppApplication application = (AppApplication) getActivity().getApplication();
+        Tracker t = application.getDefaultTracker();
+        t.send(new HitBuilders.EventBuilder()
+                .setCategory("page_social")
+                .setAction("loadPage")
+                .setLabel(String.valueOf(page))
+                .build());
+
+    }
     SocialMediaAdapter.VH.DetailClickListener  detailClickListener = new SocialMediaAdapter.VH.DetailClickListener() {
         @Override
         public void showDetail(int position, List<SocialMediaItem> data) {

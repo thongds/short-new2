@@ -3,6 +3,7 @@ package com.sip.shortnews;
 import android.app.ActionBar;
 import android.app.Application;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
@@ -123,7 +124,8 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
     private void loadFragment(){
         mErrorView.setVisibility(View.GONE);
         mRlProgress.setVisibility(View.VISIBLE);
-        HomeMediaService.service().checkVersion("1.0","1").enqueue(new Callback<SupportResponse>() {
+        String versionName = BuildConfig.VERSION_NAME;
+        HomeMediaService.service().checkVersion(versionName,"1").enqueue(new Callback<SupportResponse>() {
             @Override
             public void onResponse(Call<SupportResponse> call, Response<SupportResponse> response) {
                 if (response.isSuccessful()){

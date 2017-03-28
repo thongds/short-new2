@@ -12,8 +12,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
+import com.sip.shortnews.AppApplication;
 import com.sip.shortnews.MainActivity;
 import com.sip.shortnews.R;
+import com.sip.shortnews.Utilies.AnalaticEnum;
 import com.sip.shortnews.adapter.NewsMediaAdapter;
 import com.sip.shortnews.listener.EndlessRecyclerViewScrollListener;
 import com.sip.shortnews.model.HeaderModel;
@@ -68,6 +72,7 @@ public class NewsFragment extends PFragment {
         mFragment = this;
         mDilatingDotsProgressBar = (DilatingDotsProgressBar)view.findViewById(R.id.load_more_progress);
         mDilatingDotsProgressBar.hide();
+
         mScrollListener = new EndlessRecyclerViewScrollListener(mLayoutManager) {
             @Override
             public void onLoadMore(int page, int totalItemsCount) {
@@ -106,6 +111,7 @@ public class NewsFragment extends PFragment {
     }
 
     private void callService(final int page, final boolean isRefreshing) {
+        sentEvent(page);
         mIsRefresh = isRefreshing;
         mErrorView.setVisibility(View.INVISIBLE);
         if(page == 0 && isRefreshing == false)
@@ -117,38 +123,41 @@ public class NewsFragment extends PFragment {
             @Override
             public void onResponse(Call<NewsHomeSection> call, Response<NewsHomeSection> response) {
                 if(response.isSuccessful()) {
-
-                    mRecyclerView.setVisibility(View.VISIBLE);
-                    avLoadingIndicatorView.hide();
-                    if(response.body().getData().size() >0){
-                        mList.addAll(response.body().getData());
-                        if (page == 0){
-                            mHeaderModel = response.body().getNewsHomeHeader();
-                            mNewsMediaAdapter.setmHeaderModel(mHeaderModel);
-                            mNewsMediaAdapter.setmCardViewItem(mList);
-                        }
-                        mNewsMediaAdapter.notifyDataSetChanged();
-
-                    }
-                    if(isRefreshing){
-                        mRefresh.setRefreshing(false);
-                        mScrollListener.reset();
-                    }
-                    mIsRefresh = false;
-                    mDilatingDotsProgressBar.hide();
+                mFragment.updateData(page,response,isRefreshing);
+//                    mRecyclerView.setVisibility(View.VISIBLE);
+//                    avLoadingIndicatorView.hide();
+//                    if(response.body().getData().size() >0){
+//                        mList.addAll(response.body().getData());
+//                        if (page == 0){
+//                            mHeaderModel = response.body().getNewsHomeHeader();
+//                            mNewsMediaAdapter.setmHeaderModel(mHeaderModel);
+//                            mNewsMediaAdapter.setmCardViewItem(mList);
+//                        }
+//                        mNewsMediaAdapter.notifyDataSetChanged();
+//
+//                    }
+//                    if(isRefreshing){
+//                        mRefresh.setRefreshing(false);
+//                        mScrollListener.reset();
+//                    }
+//                    mIsRefresh = false;
+//                    mDilatingDotsProgressBar.hide();
                 }
             }
 
             @Override
             public void onFailure(Call<NewsHomeSection> call, Throwable t) {
                 t.printStackTrace();
-                mIsRefresh = false;
-                mRecyclerView.setVisibility(View.GONE);
-                mDilatingDotsProgressBar.hide();
-                avLoadingIndicatorView.setVisibility(View.GONE);
-                if(page == 0 && isRefreshing == false)
-                    mErrorView.setVisibility(View.VISIBLE);
-                mRefresh.setRefreshing(false);
+                mFragment.showError(page,isRefreshing);
+//                mIsRefresh = false;
+//                mDilatingDotsProgressBar.hide();
+//                mErrorView.setVisibility(View.VISIBLE);
+//                avLoadingIndicatorView.setVisibility(View.GONE);
+//                if(page == 0 && isRefreshing == false){
+//                    mRecyclerView.setVisibility(View.GONE);
+//                }
+//
+//                mRefresh.setRefreshing(false);
 
                // Toast.makeText(getContext(),"network error!",Toast.LENGTH_LONG).show();
             }
@@ -156,7 +165,68 @@ public class NewsFragment extends PFragment {
         });
     }
 
+    public void showError(final int page,final boolean isRefreshing){
+        AppApplication appApplication = (AppApplication) getActivity().getApplication();
+        appApplication.sentEvent(AnalaticEnum.NEWS_PAGE_CATEGORY_EVENT.getValue(),AnalaticEnum.NEWS_PAGE_ACTION_ERROR_EVENT.getValue(),String.valueOf(page));
+        mMainActive.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                mIsRefresh = false;
+                mDilatingDotsProgressBar.hide();
+                avLoadingIndicatorView.setVisibility(View.GONE);
+                if(page == 0){
+                    mRecyclerView.setVisibility(View.GONE);
+                    mErrorView.setVisibility(View.VISIBLE);
+                }else{
+                    Toast.makeText(getContext(),"network error!",Toast.LENGTH_LONG).show();
+                }
 
+                mRefresh.setRefreshing(false);
+                Toast.makeText(getContext(),"network error!",Toast.LENGTH_LONG).show();
+            }
+        });
+
+    }
+
+    public void updateData(final int page,final Response<NewsHomeSection> response,final boolean isRefreshing){
+        AppApplication appApplication = (AppApplication) getActivity().getApplication();
+        appApplication.sentEvent(AnalaticEnum.NEWS_PAGE_CATEGORY_EVENT.getValue(),AnalaticEnum.NEWS_PAGE_ACTION_SUCCESS_EVENT.getValue(),String.valueOf(page));
+
+        mMainActive.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                mRecyclerView.setVisibility(View.VISIBLE);
+                avLoadingIndicatorView.hide();
+                if(response.body().getData().size() >0){
+                    mList.addAll(response.body().getData());
+                    if (page == 0){
+                        mHeaderModel = response.body().getNewsHomeHeader();
+                        mNewsMediaAdapter.setmHeaderModel(mHeaderModel);
+                        mNewsMediaAdapter.setmCardViewItem(mList);
+                    }
+                    mNewsMediaAdapter.notifyDataSetChanged();
+
+                }
+                if(isRefreshing){
+                    mRefresh.setRefreshing(false);
+                    mScrollListener.reset();
+                }
+                mIsRefresh = false;
+                mDilatingDotsProgressBar.hide();
+            }
+        });
+
+    }
+    public void sentEvent(int page){
+           AppApplication application = (AppApplication) getActivity().getApplication();
+            Tracker t = application.getDefaultTracker();
+            t.send(new HitBuilders.EventBuilder()
+                    .setCategory("page_news")
+                    .setAction("loadPage")
+                    .setLabel(String.valueOf(page))
+                    .build());
+
+    }
     NewsMediaAdapter.IFItemClick ifItemClick = new NewsMediaAdapter.IFItemClick() {
         @Override
         public void clickVideo(NewsHomeItem data) {

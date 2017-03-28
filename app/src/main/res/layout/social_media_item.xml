@@ -115,7 +115,7 @@
                     android:src="@drawable/vnexpress_post"
                     android:layout_height="wrap_content"/>
                 <RelativeLayout
-                    android:visibility="invisible"
+                    android:visibility="gone"
                     android:id="@+id/image_more"
                     android:layout_width="100dp"
                     android:layout_height="100dp"

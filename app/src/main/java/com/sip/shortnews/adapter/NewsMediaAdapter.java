@@ -81,8 +81,8 @@ public class NewsMediaAdapter<V> extends RecyclerView.Adapter<RecyclerView.ViewH
         if (holder instanceof MyViewHolderItem){
             NewsHomeItem cardViewItem = mCardViewItem.get(position-1);
             MyViewHolderItem myViewHolder = (MyViewHolderItem)holder;
-            myViewHolder.pushData(mContext,cardViewItem,mListener,mDisplayOption);
 
+            myViewHolder.pushData(mContext,cardViewItem,mListener,mDisplayOption);
         }
     }
 
