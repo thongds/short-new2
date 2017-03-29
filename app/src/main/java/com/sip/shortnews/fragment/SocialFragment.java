@@ -111,7 +111,7 @@ public class SocialFragment extends PFragment implements AdapterView.OnItemClick
         sentEvent(page);
         mIsRefresh = isRefreshing;
         mErrorView.setVisibility(View.GONE);
-        if(page == 0)
+        if(page == 0 && !isRefreshing)
             avLoadingIndicatorView.show();
         if(page!=0)
             mDilatingDotsProgressBar.show();
