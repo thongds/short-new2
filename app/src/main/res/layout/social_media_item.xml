@@ -110,7 +110,7 @@
                 <ImageView
                     android:id="@+id/post_content"
                     android:clickable="true"
-                    android:scaleType="centerCrop"
+                    android:scaleType="centerInside"
                     android:layout_width="match_parent"
                     android:src="@drawable/vnexpress_post"
                     android:layout_height="wrap_content"/>
