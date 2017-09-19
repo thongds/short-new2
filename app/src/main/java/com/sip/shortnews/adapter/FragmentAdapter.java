@@ -19,21 +19,21 @@ public class FragmentAdapter extends FragmentPagerAdapter {
 
     @Override
     public Fragment getItem(int position) {
-        if(position ==1){
-            return new SocialFragment();
-        }
+//        if(position ==1){
+//            return new SocialFragment();
+//        }
         return new NewsFragment();
     }
 
     @Override
     public CharSequence getPageTitle(int position) {
-        if(position ==1)
-            return "Mạng Xã Hội";
+//        if(position ==1)
+//            return "Mạng Xã Hội";
         return "Báo Chí";
     }
 
     @Override
     public int getCount() {
-        return 2;
+        return 1;
     }
 }

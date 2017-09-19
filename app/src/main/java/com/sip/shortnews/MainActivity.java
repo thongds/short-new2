@@ -103,7 +103,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         //Typeface typeface = Typeface.createFromAsset(getAssets(),"fonts/brush.ttf");
         //textView.setTypeface(typeface);
         //menu.setOnClickListener(this);
-        mSlidingTabLayout.setOnclickMenu(this);
+        //mSlidingTabLayout.setOnclickMenu(this);
         mUpdateLink.setOnClickListener(this);
         loadFragment();
         mErrorView.setOnRetryListener(new ErrorView.RetryListener() {
@@ -133,7 +133,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                     if(supportResponse.isIs_support()){
                         FragmentAdapter fragmentAdapter = new FragmentAdapter(mFragmentManager);
                         mViewPager.setAdapter(fragmentAdapter);
-                        mSlidingTabLayout.setViewPager(mViewPager);
+                        //mSlidingTabLayout.setViewPager(mViewPager);
                         mRlProgress.setVisibility(View.GONE);
                         //mDilatingDotsProgressBar.hide();
                         mErrorView.setVisibility(View.GONE);
@@ -252,67 +252,6 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         }
     }
     public void generateMenu(){
-
-
-
-//        ListView listView = (ListView)findViewById(R.id.list_view_menu);
-//        ArrayList<MenuItemCustomize> menuItemArrayList = new ArrayList<>();
-//        int[] resourceIcon = new int[20];
-//        resourceIcon[0] = R.drawable.icon_airplane;
-//        resourceIcon[1] = R.drawable.icon_bicycle;
-//        resourceIcon[2] = R.drawable.icon_directions;
-//        resourceIcon[3] = R.drawable.icon_eiffel_tower;
-//        resourceIcon[4] = R.drawable.icon_glasses;
-//        resourceIcon[5] = R.drawable.icon_helm;
-//        resourceIcon[6] = R.drawable.icon_palm_tree;
-//        resourceIcon[7] = R.drawable.icon_home;
-//        for(int i=0;i<8;i++){
-//            MenuItemCustomize menuItemCustomize = new MenuItemCustomize();
-//            if(i==3){
-//                menuItemCustomize.setHasNewLesson(true);
-//            }
-//            if(i == 7){
-//                menuItemCustomize.setmMenuTitle("Home");
-//            }
-//            menuItemCustomize.setmIconResource(resourceIcon[i]);
-//            menuItemArrayList.add(menuItemCustomize);
-//        }
-//        MenuAdapter menuAdapter = new MenuAdapter(this,R.layout.item_menu,menuItemArrayList);
-//        listView.setAdapter(menuAdapter);
     }
-//    private void getFirebaseConfig() {
-//        mFirebaseRemoteConfig = FirebaseRemoteConfig.getInstance();
-//        mFirebaseRemoteConfig.setDefaults(R.xml.default_firebase_config);
-//
-//        ServerConfig.setDefault_domain(mFirebaseRemoteConfig.getString("default_domain_in_local"));
-//        Handler handler = new Handler();
-//        handler.postDelayed(new Runnable() {
-//            @Override
-//            public void run() {
-//                mFirebaseRemoteConfig.fetch(0)
-//                        .addOnCompleteListener(new OnCompleteListener<Void>() {
-//                            @Override
-//                            public void onComplete(@NonNull Task<Void> task) {
-//                                if (task.isSuccessful()) {
-//                                    Toast.makeText(getApplicationContext(), "Fetch Succeeded",
-//                                            Toast.LENGTH_SHORT).show();
-//
-//                                    // Once the config is successfully fetched it must be activated before newly fetched
-//                                    // values are returned.
-//                                    mFirebaseRemoteConfig.activateFetched();
-//                                    ServerConfig.setDefault_domain(mFirebaseRemoteConfig.getString("default_domain"));
-//                                    loadFragment();
-//                                }else {
-//                                    Toast.makeText(getApplicationContext(), "Fetch fail",
-//                                            Toast.LENGTH_SHORT).show();
-//                                    loadFragment();
-//                                }
-//                            }
-//                        });
-//            }
-//        },500);
-//
-//
-//    }
 
 }

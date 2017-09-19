@@ -46,7 +46,7 @@
                 android:layout_height="wrap_content"
                 android:textSize="18sp"
                 android:textColor="@color/colorWhite"
-                android:text="Mạng Xã Hội"/>
+                android:text="Mạng Xã Hội2"/>
         </LinearLayout>
         </LinearLayout>
         <!--<ImageView-->
